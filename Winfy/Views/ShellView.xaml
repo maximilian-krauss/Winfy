@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Winfy.Views.ShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             MinHeight="174"
+             MinWidth="174"
+             MaxWidth="174"
+             Background="#000000"
+             Foreground="#FFFFFF">
+    <Border>
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="About Winfy..." cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
+                <MenuItem Header="Settings..." cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
+                <Separator/>
+                <MenuItem Header="Play/Pause" cal:Message.Attach="[Event Click] = [Action PlayPause]" />
+                <MenuItem Header="Previous track" cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
+                <MenuItem Header="Next track" cal:Message.Attach="[Event Click] = [Action PlayNext]" />
+                <Separator/>
+                <MenuItem Header="Exit" cal:Message.Attach="[Event Click] = [Action TryClose]" />
+            </ContextMenu>
+        </Border.ContextMenu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="174" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <Border Grid.Row="0">
+                <Border.Background>
+                    <ImageBrush ImageSource="{Binding CoverImage}"/>
+                </Border.Background>
+                <Image Source="/Images/cover.png" Stretch="None"   />
+            </Border>
+            
+            <StackPanel Grid.Row="1" Margin="5">
+                <TextBlock Name="CurrentTrack" Text="The Other Side" FontSize="14" FontWeight="Light" TextWrapping="WrapWithOverflow" />
+                <TextBlock Name="CurrentArtist" Text="Pendulum" TextWrapping="WrapWithOverflow" />
+            </StackPanel>
+            
+        </Grid>
+    </Border>
+    
+</UserControl>
