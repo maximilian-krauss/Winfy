@@ -6,6 +6,7 @@ using System.Text;
 namespace Winfy.Core {
     public interface ICoverService {
         string FetchCover(string artist, string track);
+        double CacheSize();
         void ClearCache();
     }
 }

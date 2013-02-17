@@ -20,6 +20,7 @@ namespace Winfy.ViewModels {
             _Logger = logger;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             AlwaysOnTop = _Settings.AlwaysOnTop;
+            CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
         }
 
         public bool AlwaysOnTop {
@@ -33,9 +34,16 @@ namespace Winfy.ViewModels {
             set { _CanClearCache = value; NotifyOfPropertyChange(() => CanClearCache); }
         }
 
+        private string _CacheSize;
+        public string CacheSize {
+            get { return _CacheSize; }
+            set { _CacheSize = value; NotifyOfPropertyChange(() => CacheSize); }
+        }
+
         public void ClearCache() {
             try {
                 _CoverService.ClearCache();
+                CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
             }
             catch (Exception exc) {
                 _Logger.WarnException("Failed to clear cover cache", exc);

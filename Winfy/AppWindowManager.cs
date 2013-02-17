@@ -37,7 +37,7 @@ namespace Winfy {
             wnd.Topmost = _Settings.AlwaysOnTop;
             wnd.SizeToContent = SizeToContent.WidthAndHeight;
             wnd.ResizeMode = ResizeMode.NoResize;
-            wnd.Icon = GetImageSourceFromResource("App.ico");
+            wnd.Icon = Helper.GetImageSourceFromResource("App.ico");
             TrackLocation(wnd, rootModel);
             if(rootModel is ShellViewModel)
                 SetupShell(wnd);
@@ -59,12 +59,6 @@ namespace Winfy {
                                             IntPtr hwnd = new WindowInteropHelper(window).Handle;
                                         };
             window.MouseLeftButtonDown += (o, e) => window.DragMove();
-        }
-
-        //TODO: Move me to a better accessible place 
-        private ImageSource GetImageSourceFromResource(string psResourceName) {
-            var oUri = new Uri("pack://application:,,,/Winfy;component/" + psResourceName, UriKind.RelativeOrAbsolute);
-            return BitmapFrame.Create(oUri);
         }
 
         private void TrackLocation(Window wnd, object rootViewModel) {

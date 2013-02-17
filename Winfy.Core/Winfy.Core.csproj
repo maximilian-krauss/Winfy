@@ -38,6 +38,7 @@
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
@@ -47,17 +48,20 @@
     <Reference Include="System.Windows.Interactivity">
       <HintPath>..\packages\Caliburn.Micro.1.4.1\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContracts.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="CoverService.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="ICoverService.cs" />
     <Compile Include="ISpotifyController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
