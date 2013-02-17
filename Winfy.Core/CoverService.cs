@@ -1,10 +1,8 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Web;
 using System.Xml.Serialization;
 using Winfy.Core.Extensions;
@@ -77,11 +75,11 @@ namespace Winfy.Core {
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
-            try {
-                var requestUrl = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={0}&track={1}&artist={2}",
+            var requestUrl = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={0}&track={1}&artist={2}",
                     _Contracts.LastFmApiKey,
                     HttpUtility.UrlEncode(CleanTrackName(track)),
                     HttpUtility.UrlEncode(artist));
+            try {
                 var request = CreateWebRequest(requestUrl);
                 var response = (HttpWebResponse)request.GetResponse();
                 LastFmResponse lfmResponse;
@@ -104,7 +102,7 @@ namespace Winfy.Core {
                 return string.Empty;
             }
             catch (Exception exc) {
-                _Logger.WarnException("Failed to retrieve cover", exc);
+                _Logger.WarnException(string.Format("Failed to retrieve cover. Endpoint: {0}", requestUrl), exc);
                 return string.Empty;
             }
         }
