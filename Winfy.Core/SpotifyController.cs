@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -57,15 +58,17 @@ namespace Winfy.Core {
         const long NexttrackKey = 0xB0000L;
         const long PreviousKey = 0xC0000L;
 
+        private readonly Logger _Logger;
+
         private Process _SpotifyProcess;
         private Thread _BackgroundChangeTracker;
         private Timer _ProcessWatcher;
         private WinEventDelegate _ProcDelegate;
-        private WinEventDelegate _ProcDelegateStart;
 
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
-        public SpotifyController() {
+        public SpotifyController(Logger logger) {
+            _Logger = logger;
             AttachToProcess();
             JoinBackgroundProcess();
 
@@ -152,7 +155,6 @@ namespace Winfy.Core {
                     return;
 
                 _ProcDelegate = new WinEventDelegate(WinEventProc);
-                var hWinEventHookStart = SetWinEventHook(0x00008000, 0x00008000, IntPtr.Zero, _ProcDelegateStart, 0, 0, 0);
 
                 if (_SpotifyProcess != null) {
                     var hwndSpotify = _SpotifyProcess.MainWindowHandle;
@@ -162,13 +164,12 @@ namespace Winfy.Core {
                     var msg = new Message();
                     while (GetMessage(ref msg, hwndSpotify, 0, 0)) {
                         UnhookWinEvent(hWinEventHook);
-                        UnhookWinEvent(hWinEventHookStart);
                     }
                 }
             }
             catch (ThreadAbortException) { /* Thread was aborted, accept it */ }
             catch (Exception exc) {
-                //TODO: Log exception
+                _Logger.WarnException("BackgroundChangeTrackerWork failed", exc);
                 Console.WriteLine(exc.ToString());
             }
         }

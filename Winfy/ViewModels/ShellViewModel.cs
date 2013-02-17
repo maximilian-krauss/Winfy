@@ -10,6 +10,7 @@ using System.Text;
 using Winfy.Core;
 using Action = System.Action;
 using TinyIoC;
+using NLog;
 
 namespace Winfy.ViewModels {
     public sealed class ShellViewModel : Screen {
@@ -18,14 +19,16 @@ namespace Winfy.ViewModels {
         private readonly ICoverService _CoverService;
         private readonly IEventAggregator _EventAggregator;
         private readonly AppSettings _Settings;
+        private readonly Logger _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
 
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
             _EventAggregator = eventAggregator;
             _Settings = settings;
+            _Logger = logger;
 
             CoverImage = NoCoverUri;
             UpdateView();
@@ -96,28 +99,32 @@ namespace Winfy.ViewModels {
         }
 
         private void UpdateView() {
-            var track = _SpotifyController.GetSongName();
-            var artist = _SpotifyController.GetArtistName();
+            try {
+                var track = _SpotifyController.GetSongName();
+                var artist = _SpotifyController.GetArtistName();
 
-            CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
-            CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+                CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
+                CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
 
-            CanPlayPause = _SpotifyController.IsSpotifyOpen();
-            CanPlayPrevious = _SpotifyController.IsSpotifyOpen();
-            CanPlayNext = _SpotifyController.IsSpotifyOpen();
+                CanPlayPause = _SpotifyController.IsSpotifyOpen();
+                CanPlayPrevious = _SpotifyController.IsSpotifyOpen();
+                CanPlayNext = _SpotifyController.IsSpotifyOpen();
 
-            if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
-                var updateCoverAction = new Action(() => {
-                                                       var coverUri = _CoverService.FetchCover(artist, track);
-                                                       if (string.IsNullOrEmpty(coverUri))
-                                                           coverUri = NoCoverUri;
-                                                       CoverImage = coverUri;
-                                                   });
-                updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
+                if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
+                    var updateCoverAction = new Action(() => {
+                                                           var coverUri = _CoverService.FetchCover(artist, track);
+                                                           if (string.IsNullOrEmpty(coverUri))
+                                                               coverUri = NoCoverUri;
+                                                           CoverImage = coverUri;
+                                                       });
+                    updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
+                }
+                else
+                    CoverImage = NoCoverUri;
             }
-            else
-                CoverImage = NoCoverUri;
-
+            catch (Exception exc) {
+                _Logger.FatalException("UpdateView failed hard", exc);
+            }
         }
 
         private void UpdateCoverActionCallback(IAsyncResult result) {

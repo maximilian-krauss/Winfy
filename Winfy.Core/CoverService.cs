@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -50,10 +51,12 @@ namespace Winfy.Core {
         private const string CacheFileNameTemplate = "{0}.jpg";
         private readonly AppContracts _Contracts;
         private readonly string _CacheDirectory;
+        private readonly Logger _Logger;
 
-        public CoverService(AppContracts contracts) {
+        public CoverService(AppContracts contracts, Logger logger) {
             _Contracts = contracts;
             _CacheDirectory = Path.Combine(contracts.SettingsLocation, "CoverCache");
+            _Logger = logger;
             if (!Directory.Exists(_CacheDirectory))
                 Directory.CreateDirectory(_CacheDirectory);
         }
@@ -64,7 +67,7 @@ namespace Winfy.Core {
                                                                                  File.Delete(f);
                                                                              }
                                                                              catch (Exception exc) {
-                                                                                 //TODO: Log exception
+                                                                                 _Logger.WarnException("Failed to delete file", exc);
                                                                              }
                                                                          });
         }
@@ -101,7 +104,7 @@ namespace Winfy.Core {
                 return string.Empty;
             }
             catch (Exception exc) {
-                //TODO: Log exception
+                _Logger.WarnException("Failed to retrieve cover", exc);
                 return string.Empty;
             }
         }
