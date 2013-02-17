@@ -10,7 +10,7 @@
              MaxWidth="174"
              Background="#000000"
              Foreground="#FFFFFF">
-    <Border>
+    <Border BorderBrush="#000000" BorderThickness="0">
         <Border.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="About Winfy..." cal:Message.Attach="[Event Click] = [Action ShowAbout]" />

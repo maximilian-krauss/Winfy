@@ -1,5 +1,7 @@
 ﻿using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace Winfy.ViewModels {
         private readonly ICoverService _CoverService;
         private readonly IEventAggregator _EventAggregator;
         private readonly AppSettings _Settings;
+        private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings) {
             _WindowManager = windowManager;
@@ -24,6 +27,7 @@ namespace Winfy.ViewModels {
             _EventAggregator = eventAggregator;
             _Settings = settings;
 
+            CoverImage = NoCoverUri;
             UpdateView();
 
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
@@ -103,11 +107,16 @@ namespace Winfy.ViewModels {
             CanPlayNext = _SpotifyController.IsSpotifyOpen();
 
             if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
-                var updateCoverAction = new Action(() => CoverImage = _CoverService.FetchCover(artist, track));
+                var updateCoverAction = new Action(() => {
+                                                       var coverUri = _CoverService.FetchCover(artist, track);
+                                                       if (string.IsNullOrEmpty(coverUri))
+                                                           coverUri = NoCoverUri;
+                                                       CoverImage = coverUri;
+                                                   });
                 updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
             }
             else
-                CoverImage = string.Empty;
+                CoverImage = NoCoverUri;
 
         }
 
