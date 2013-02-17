@@ -28,6 +28,10 @@ namespace Winfy.Core {
             get { return "d6177d680cea0ec4c248b3cc4897047a"; }
         }
 
+        public string HomepageUrl {
+            get { return "http://krausshq.com"; }
+        }
+
         public string SettingsLocation {
             get {
                 var location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName);

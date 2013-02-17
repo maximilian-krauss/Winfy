@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using Winfy.ViewModels;
 using System.Windows.Interop;
@@ -35,6 +35,7 @@ namespace Winfy {
             wnd.Topmost = _Settings.AlwaysOnTop;
             wnd.SizeToContent = SizeToContent.WidthAndHeight;
             wnd.ResizeMode = ResizeMode.NoResize;
+            wnd.Icon = GetImageSourceFromResource("App.ico");
             if(rootModel is ShellViewModel)
                 SetupShell(wnd);
 
@@ -57,5 +58,10 @@ namespace Winfy {
             window.MouseLeftButtonDown += (o, e) => window.DragMove();
         }
 
+        //TODO: Move me to a better accessible place 
+        private ImageSource GetImageSourceFromResource(string psResourceName) {
+            var oUri = new Uri("pack://application:,,,/Winfy;component/" + psResourceName, UriKind.RelativeOrAbsolute);
+            return BitmapFrame.Create(oUri);
+        }
     }
 }

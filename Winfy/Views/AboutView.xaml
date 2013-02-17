@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d">
-    <Grid Margin="20">
+    <Grid Margin="40 20">
         <Grid.Resources>
             <Style x:Key="LeftColumn" TargetType="{x:Type TextBlock}">
                 <Setter Property="Margin" Value="10" />
@@ -12,6 +13,15 @@
             </Style>
             <Style x:Key="RightColumn" TargetType="{x:Type TextBlock}">
                 <Setter Property="Margin" Value="10" />
+            </Style>
+            <Style x:Key="HyperlinkButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
@@ -21,11 +31,25 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="20" FontWeight="Light" Name="ApplicationName" TextAlignment="Center" />
+        <Image Grid.Row="0" Grid.ColumnSpan="2" Source="/Images/Logo.png" Stretch="None" HorizontalAlignment="Center" />
         
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Version:" Style="{StaticResource LeftColumn}" />
-        <TextBlock Grid.Row="1" Grid.Column="1" Name="ApplicationVersion" Style="{StaticResource RightColumn}" />
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontSize="20" FontWeight="Light" Name="ApplicationName" TextAlignment="Center" />
+        
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Version:" Style="{StaticResource LeftColumn}" />
+        <TextBlock Grid.Row="2" Grid.Column="1" Name="ApplicationVersion" Style="{StaticResource RightColumn}" />
+        
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Created by" Style="{StaticResource LeftColumn}" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="Maximilian Krauss" Style="{StaticResource RightColumn}" />
+
+        <Button Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" Focusable="False" cal:Message.Attach="[Event Click] = [Action GoHome]" HorizontalAlignment="Center">
+            <TextBlock>
+                <Hyperlink Focusable="False">krausshq.com</Hyperlink>
+            </TextBlock>
+        </Button>
     </Grid>
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Winfy.Core;
@@ -19,6 +20,10 @@ namespace Winfy.ViewModels {
 
         public string ApplicationName { get { return _Contracts.ApplicationName; } }
         public Version ApplicationVersion { get { return _Contracts.ApplicationVersion; } }
+
+        public void GoHome() {
+            Process.Start(_Contracts.HomepageUrl);
+        }
 
     }
 }
