@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,13 @@ namespace Winfy.ViewModels {
         private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
         private readonly ICoverService _CoverService;
+        private readonly Logger _Logger;
 
-        public SettingsViewModel(AppSettings settings, AppContracts contracts, ICoverService coverService) {
+        public SettingsViewModel(AppSettings settings, AppContracts contracts, ICoverService coverService, Logger logger) {
             _Settings = settings;
             _Contracts = contracts;
             _CoverService = coverService;
+            _Logger = logger;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
             AlwaysOnTop = _Settings.AlwaysOnTop;
         }
@@ -31,7 +34,12 @@ namespace Winfy.ViewModels {
         }
 
         public void ClearCache() {
-            _CoverService.ClearCache();
+            try {
+                _CoverService.ClearCache();
+            }
+            catch (Exception exc) {
+                _Logger.WarnException("Failed to clear cover cache", exc);
+            }
             CanClearCache = false;
         }
 

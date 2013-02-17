@@ -3,11 +3,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using Winfy.ViewModels;
 using System.Windows.Interop;
 using Winfy.Core;
+using Winfy.Core.Extensions;
 
 namespace Winfy {
     public sealed class AppWindowManager : WindowManager {
@@ -36,6 +38,7 @@ namespace Winfy {
             wnd.SizeToContent = SizeToContent.WidthAndHeight;
             wnd.ResizeMode = ResizeMode.NoResize;
             wnd.Icon = GetImageSourceFromResource("App.ico");
+            TrackLocation(wnd, rootModel);
             if(rootModel is ShellViewModel)
                 SetupShell(wnd);
 
@@ -62,6 +65,32 @@ namespace Winfy {
         private ImageSource GetImageSourceFromResource(string psResourceName) {
             var oUri = new Uri("pack://application:,,,/Winfy;component/" + psResourceName, UriKind.RelativeOrAbsolute);
             return BitmapFrame.Create(oUri);
+        }
+
+        private void TrackLocation(Window wnd, object rootViewModel) {
+            var wndId = rootViewModel.GetType().Name.ToSHA1();
+
+            var savedPosition = _Settings.Positions.FirstOrDefault(p => p.WindowId == wndId);
+            if (savedPosition == null) {
+                wnd.WindowStartupLocation = wnd.Owner != null
+                                                ? WindowStartupLocation.CenterOwner
+                                                : WindowStartupLocation.CenterScreen;
+            }
+            else {
+                wnd.WindowStartupLocation = WindowStartupLocation.Manual;
+                wnd.Top = savedPosition.Top;
+                wnd.Left = savedPosition.Left;
+            }
+
+            if (savedPosition == null) {
+                savedPosition = new WindowPosition {WindowId = wndId};
+                _Settings.Positions.Add(savedPosition);
+            }
+
+            wnd.Closing += (o, e) => {
+                               savedPosition.Top = ((Window) o).Top;
+                               savedPosition.Left = ((Window) o).Left;
+                           };
         }
     }
 }
