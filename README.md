@@ -22,10 +22,4 @@ This application is licened under The Code Project Open License (CPOL) 1.02 whic
 Winfy is **not** a Spotify **replacement**. You need both running at the same time.
 
 ## Todo
-- [ ] Player buttons #1
-- [ ] Loading hint #2
-- [ ] Change animation #3
-- [x] Cover placeholder #4
-- [ ] Put Winfy in autorun #5
-- [ ] Save window location #6
-- [x] Implement logging
+Interested in what's comming next? Check the [open issue list](https://github.com/maximilian-krauss/Winfy/issues?state=open).
