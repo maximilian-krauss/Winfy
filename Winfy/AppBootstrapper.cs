@@ -1,18 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using Caliburn.Micro.TinyIOC;
 using Winfy.Core;
 using Winfy.ViewModels;
 using Caliburn.Micro;
 using System.IO;
 using NLog;
+using System.Diagnostics;
 
 namespace Winfy {
     public sealed class AppBootstrapper : TinyBootstrapper<ShellViewModel> {
+
         private AppSettings _Settings;
         private AppContracts _Contracts;
         private Logger _Logger;
         private string _SettingsPath;
-        
+
+        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
+            base.OnStartup(sender, e);
+
+            if(Process.GetProcessesByName("Winfy").Length > 1)
+                Application.Shutdown();
+        }
+
         protected override void Configure() {
             base.Configure();
 
