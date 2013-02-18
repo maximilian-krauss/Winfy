@@ -47,7 +47,7 @@ namespace Caliburn.Micro.TinyIOC {
         protected override void Configure() {
             //  allow base classes to change bootstrapper settings
             ConfigureBootstrapper();
-
+            EnforceNamespaceConvention = true;
             //  validate settings
             if (CreateWindowManager == null)
                 // ReSharper disable NotResolvedInText

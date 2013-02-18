@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Winfy.Core;
+using Winfy.Core.Deployment;
 using Action = System.Action;
 using TinyIoC;
 using NLog;
@@ -18,17 +19,19 @@ namespace Winfy.ViewModels {
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
         private readonly IEventAggregator _EventAggregator;
+        private readonly IUpdateController _UpdateController;
         private readonly AppSettings _Settings;
         private readonly Logger _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
 
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateController updateController) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
             _EventAggregator = eventAggregator;
             _Settings = settings;
             _Logger = logger;
+            _UpdateController = updateController;
 
             CoverImage = NoCoverUri;
             UpdateView();
@@ -36,6 +39,8 @@ namespace Winfy.ViewModels {
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
             _SpotifyController.SpotifyOpened += (o, e) => UpdateView();
             _SpotifyController.SpotifyExited += (o, e) => UpdateView();
+            _UpdateController.UpdateReady += UpdateReady;
+            _UpdateController.StartBackgroundCheck();
         }
 
         #region Properties
@@ -123,7 +128,7 @@ namespace Winfy.ViewModels {
                     CoverImage = NoCoverUri;
             }
             catch (Exception exc) {
-                _Logger.FatalException("UpdateView failed hard", exc);
+                _Logger.FatalException("UpdateView() failed hard", exc);
             }
         }
 
@@ -134,6 +139,16 @@ namespace Winfy.ViewModels {
                 if (d != null)
                     d.EndInvoke(result);
             }
+        }
+
+        void UpdateReady(object sender, UpdateReadyEventArgs e) {
+            if(e.IsRequired) //important update, do the restart asap
+                _UpdateController.Restart();
+            
+            Execute.OnUIThread(() => _WindowManager.ShowDialog(
+                TinyIoCContainer.Current.Resolve<UpdateReadyViewModel>(
+                    new NamedParameterOverloads(new Dictionary<string, object> {{"newVersion", e.NewVersion}}))));
+
         }
     }
 }

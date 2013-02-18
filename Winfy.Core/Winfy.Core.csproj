@@ -39,6 +39,7 @@
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
@@ -60,6 +61,13 @@
     <Compile Include="AppContracts.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="CoverService.cs" />
+    <Compile Include="Deployment\AppDeployment.cs" />
+    <Compile Include="Deployment\FakeDeployment.cs" />
+    <Compile Include="Deployment\IDeployment.cs" />
+    <Compile Include="Deployment\IUpdateController.cs" />
+    <Compile Include="Deployment\NoDeployment.cs" />
+    <Compile Include="Deployment\UpdateController.cs" />
+    <Compile Include="Deployment\UpdateReadyEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="ICoverService.cs" />

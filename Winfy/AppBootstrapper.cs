@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using System.IO;
 using NLog;
 using System.Diagnostics;
+using Winfy.Core.Deployment;
 
 namespace Winfy {
     public sealed class AppBootstrapper : TinyBootstrapper<ShellViewModel> {
@@ -35,10 +36,11 @@ namespace Winfy {
 
             Container.Register<AppContracts>(_Contracts);
             Container.Register<AppSettings>(_Settings);
+            Container.Register<Logger>(_Logger);
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
             Container.Register<ISpotifyController>(new SpotifyController(_Logger));
             Container.Register<ICoverService>(new CoverService(_Contracts, _Logger));
-            Container.Register<Logger>(_Logger);
+            Container.Register<IUpdateController>(new UpdateController(_Logger));
         }
 
         protected override void OnExit(object sender, EventArgs e) {

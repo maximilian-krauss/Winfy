@@ -38,8 +38,8 @@
             </Border>
             
             <StackPanel Grid.Row="1" Margin="5">
-                <TextBlock Name="CurrentTrack" Text="The Other Side" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
-                <TextBlock Name="CurrentArtist" Text="Pendulum" TextWrapping="WrapWithOverflow" />
+                <TextBlock Name="CurrentTrack" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
+                <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Light" />
             </StackPanel>
             
         </Grid>
