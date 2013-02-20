@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
@@ -51,6 +51,8 @@ namespace Winfy {
             window.ResizeMode = ResizeMode.NoResize;
             window.ShowInTaskbar = false;
             window.SourceInitialized += (o, e) => {
+                                            if (!Helper.IsDWMSupported)
+                                                return;
                                             var helper = new WindowInteropHelper(window);
                                             var val = 2;
                                             DwmSetWindowAttribute(helper.Handle, 2, ref val, 4);
