@@ -1,0 +1,10 @@
+[
+	{
+		"version" : "2.0.0.9",
+		"description" : "still beta",
+		"changes": [
+			"New: Winfy shows a changelog!",
+			"Fixed: Issues on Windows XP"
+		]
+	}
+]

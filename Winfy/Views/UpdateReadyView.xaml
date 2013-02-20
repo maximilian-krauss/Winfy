@@ -15,8 +15,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="24" Margin="0 0 0 10" FontWeight="Light">
             Your update is ready!
         </TextBlock>
@@ -28,7 +29,27 @@
             Good news! Your new Winfy version is just one click ahead. It's already downloaded and installed. All you need todo is to click on the "Restart Winfy" button below.
         </TextBlock>
 
-        <Button Grid.Row="3" Grid.Column="1" Name="Restart" Margin="5">Restart Winfy</Button>
-        
+        <Expander Grid.Row="3" Grid.ColumnSpan="2" Margin="0 5" Header="Show me what's new!">
+            <ListBox Name="Changelog" MaxHeight="120" HorizontalContentAlignment="Stretch" Margin="0 5 0 0">
+                <ListBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                </ListBox.Resources>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="4">
+                            <Border BorderBrush="{x:Static SystemColors.ControlLightBrush}" BorderThickness="0 0 0 1">
+                                <TextBlock Text="{Binding Version}" FontWeight="Bold" />
+                            </Border>
+                            <ListBox ItemsSource="{Binding Changes}" BorderThickness="0" BorderBrush="{x:Null}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Expander>
+
+        <Button Grid.Row="4" Grid.Column="1" Name="Restart" Margin="5">Restart Winfy</Button>
+
     </Grid>
 </UserControl>

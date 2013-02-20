@@ -86,7 +86,7 @@ namespace Winfy.Core {
                     HttpUtility.UrlEncode(CleanTrackName(track)),
                     HttpUtility.UrlEncode(artist));
             try {
-                var request = CreateWebRequest(requestUrl);
+                var request = Helper.CreateWebRequest(requestUrl);
                 var response = (HttpWebResponse)request.GetResponse();
                 LastFmResponse lfmResponse;
                 using (var reader = new StreamReader(response.GetResponseStream())) {
@@ -113,15 +113,8 @@ namespace Winfy.Core {
             }
         }
 
-        private HttpWebRequest CreateWebRequest(string url) {
-            var request = (HttpWebRequest) WebRequest.Create(url);
-            if (request.Proxy != null)
-                request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-            return request;
-        }
-
         private string DownloadAndSaveImage(string url, string destination) {
-            var request = CreateWebRequest(url);
+            var request = Helper.CreateWebRequest(url);
             var response = (HttpWebResponse) request.GetResponse();
 
             using (var fs = File.Create(destination)) {

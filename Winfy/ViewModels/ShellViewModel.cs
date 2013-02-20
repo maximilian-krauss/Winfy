@@ -144,10 +144,13 @@ namespace Winfy.ViewModels {
         void UpdateReady(object sender, UpdateReadyEventArgs e) {
             if(e.IsRequired) //important update, do the restart asap
                 _UpdateController.Restart();
-            
+
             Execute.OnUIThread(() => _WindowManager.ShowDialog(
                 TinyIoCContainer.Current.Resolve<UpdateReadyViewModel>(
-                    new NamedParameterOverloads(new Dictionary<string, object> {{"newVersion", e.NewVersion}}))));
+                    new NamedParameterOverloads(new Dictionary<string, object> {
+                                                                                   {"newVersion", e.NewVersion},
+                                                                                   {"changelog",e.Changelog}
+                                                                               }))));
 
         }
     }

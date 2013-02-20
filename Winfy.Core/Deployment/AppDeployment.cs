@@ -9,9 +9,13 @@ using Caliburn.Micro;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Winfy.Core.Deployment {
-    public sealed class AppDeployment : IDeployment {
+    public class AppDeployment : IDeployment {
+
+        #region Native stuff
+
         [DllImport("clr.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
         private static extern void CorLaunchApplication(uint hostType, string applicationFullName, int manifestPathsCount, string[] manifestPaths, int activationDataCount, string[] activationData, PROCESS_INFORMATION processInformation);
 
@@ -42,22 +46,28 @@ namespace Winfy.Core.Deployment {
             }
         }
 
+        #endregion
+
         public event EventHandler<UpdateReadyEventArgs> UpdateReady;
 
         private readonly Logger _Logger;
         private readonly ApplicationDeployment _Deployment;
-
-        private Version _NewVersion;
-        private bool _IsRequired;
+        private const string ChangelogLocation = "http://deploy.krausshq.com/winfy/changelog.json";
 
         public AppDeployment(Logger logger) {
             _Logger = logger;
-            _Deployment = ApplicationDeployment.CurrentDeployment;
-            _Deployment.CheckForUpdateCompleted += DeploymentCheckForUpdateCompleted;
-            _Deployment.UpdateCompleted += DeploymentUpdateCompleted;
+            if (ApplicationDeployment.IsNetworkDeployed) {
+                _Deployment = ApplicationDeployment.CurrentDeployment;
+                _Deployment.CheckForUpdateCompleted += DeploymentCheckForUpdateCompleted;
+                _Deployment.UpdateCompleted += DeploymentUpdateCompleted;
+            }
         }
 
-       public void Update() {
+        protected Version NewVersion { get; set; }
+        protected bool IsRequired { get; set; }
+        protected List<Release> Changelog { get; set; }
+
+       public virtual void Update() {
             try {
                 _Deployment.CheckForUpdateAsync();
             }
@@ -66,8 +76,7 @@ namespace Winfy.Core.Deployment {
             }
         }
 
-        public void Restart() {
-            var location = Application.ResourceAssembly.Location;
+        public virtual void Restart() {
             var updatedApplicationFullName = ApplicationDeployment.CurrentDeployment.UpdatedApplicationFullName;
             CorLaunchApplication(2, updatedApplicationFullName, 0, null, 0, null, new PROCESS_INFORMATION());
             Application.Current.Shutdown();
@@ -82,11 +91,11 @@ namespace Winfy.Core.Deployment {
             if (!e.UpdateAvailable)
                 return;
 
-            _NewVersion = e.AvailableVersion;
-            _IsRequired = e.IsUpdateRequired;
+            NewVersion = e.AvailableVersion;
+            IsRequired = e.IsUpdateRequired;
 
             _Logger.Info(string.Format("A new update is available! Old version: {0}, new version: {1}, mandatory: {2}",
-                                       _Deployment.CurrentVersion, _NewVersion, _IsRequired));
+                                       _Deployment.CurrentVersion, NewVersion, IsRequired));
 
             try {
                 _Deployment.UpdateAsync();
@@ -101,13 +110,31 @@ namespace Winfy.Core.Deployment {
                 _Logger.WarnException("Failed to apply update", e.Error);
                 return;
             }
-            OnUpdateReady(new UpdateReadyEventArgs {
-                                                       NewVersion = _NewVersion,
-                                                       IsRequired = _IsRequired
-                                                   });
+            DownloadChangelog();
         }
 
-        private void OnUpdateReady(UpdateReadyEventArgs e) {
+        protected virtual void DownloadChangelog() {
+            try {
+                var request = Helper.CreateWebRequest(ChangelogLocation);
+                var response = request.GetResponse();
+                using (var responseStream = response.GetResponseStream())
+                    Changelog = Serializer.DeserializeFromJson<List<Release>>(responseStream);
+
+                response.Close();
+            }
+            catch (Exception exc) {
+                _Logger.WarnException("Failed to get the changelog :-(", exc);
+            }
+            finally {
+                OnUpdateReady(new UpdateReadyEventArgs {
+                    NewVersion = NewVersion,
+                    IsRequired = IsRequired,
+                    Changelog = Changelog
+                });                
+            }
+        }
+
+        protected void OnUpdateReady(UpdateReadyEventArgs e) {
             var handler = UpdateReady;
             if (handler != null) handler(this, e);
         }

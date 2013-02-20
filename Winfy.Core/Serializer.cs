@@ -54,6 +54,10 @@ namespace Winfy.Core {
                 return (T)serializer.ReadObject(memoryStream);
             }
         }
+        public static T DeserializeFromJson<T>(Stream stream) {
+            var serializer = new DataContractJsonSerializer(typeof (T));
+            return (T)serializer.ReadObject(stream);
+        }
 
     }
 }

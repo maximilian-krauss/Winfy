@@ -62,6 +62,7 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="CoverService.cs" />
     <Compile Include="Deployment\AppDeployment.cs" />
+    <Compile Include="Deployment\Release.cs" />
     <Compile Include="Deployment\FakeDeployment.cs" />
     <Compile Include="Deployment\IDeployment.cs" />
     <Compile Include="Deployment\IUpdateController.cs" />

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Net;
 
 namespace Winfy.Core {
     public static class Helper {
@@ -13,20 +14,20 @@ namespace Winfy.Core {
             get { return Environment.OSVersion.Version.Major >= 6; }
         }
 
-        /// <summary>Calculates a good Looking file size</summary>
-        /// <param name="size">Your size in Bytes</param>
-        /// <returns>String, value not greater 1024, with unit</returns>
         public static string MakeNiceSize(double size) {
             return MakeNiceSize(size, "auto");
         }
 
-        /// <summary>Calculates a good Looking file size</summary>
-        /// <param name="size">Your size in Bytes</param>
-        /// <param name="mode">Any of "auto","B","KB","MB","GB","TB","PB","EB"</param>
-        /// <returns>String, value with unit</returns>
-        public static string MakeNiceSize(double size, string mode) {
-            var Suffix = new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-            int run = 0;
+        public static HttpWebRequest CreateWebRequest(string url) {
+            var request = (HttpWebRequest) WebRequest.Create(url);
+            if (request.Proxy != null) //Fix for NTLM secured proxies (hi ISA)
+                request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+            return request;
+        }
+
+        private static string MakeNiceSize(double size, string mode) {
+            var suffix = new[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+            var run = 0;
 
             if (mode == "auto") {
                 while (size >= 1024) {
@@ -35,8 +36,8 @@ namespace Winfy.Core {
                 }
             }
             else if (mode != "auto") {
-                if (Suffix.Contains(mode)) {
-                    while (Suffix[run] != mode) {
+                if (suffix.Contains(mode)) {
+                    while (suffix[run] != mode) {
                         size /= 1024;
                         run++;
                     }
@@ -46,7 +47,7 @@ namespace Winfy.Core {
                 }
 
             }
-            return Math.Round(size, 2).ToString("0.00") + " " + Suffix[run];
+            return Math.Round(size, 2).ToString("0.00") + " " + suffix[run];
         }
 
         public static ImageSource GetImageSourceFromResource(string psResourceName) {
