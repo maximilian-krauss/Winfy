@@ -1,12 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace Winfy.Core {
     public static class Helper {
+
+        public static bool IsDWMSupported {
+            get { return Environment.OSVersion.Version.Major >= 6; }
+        }
+
         /// <summary>Calculates a good Looking file size</summary>
         /// <param name="size">Your size in Bytes</param>
         /// <returns>String, value not greater 1024, with unit</returns>
@@ -44,8 +50,11 @@ namespace Winfy.Core {
         }
 
         public static ImageSource GetImageSourceFromResource(string psResourceName) {
-            var oUri = new Uri("pack://application:,,,/Winfy;component/" + psResourceName, UriKind.RelativeOrAbsolute);
-            return BitmapFrame.Create(oUri);
+            try {
+                var oUri = new Uri("pack://application:,,,/Winfy;component/" + psResourceName, UriKind.RelativeOrAbsolute);
+                return BitmapFrame.Create(oUri);
+            }
+            catch (FileFormatException) { return null; }
         }
 
     }
