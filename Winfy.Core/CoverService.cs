@@ -135,12 +135,17 @@ namespace Winfy.Core {
         
         private string CleanTrackName(string track) {
             //By removing these strings, we raise the chance to find a proper cover image
-            return track.Replace("- Original Version", string.Empty)
-                .Replace("- Radio Edit", string.Empty)
-                .Replace("- Single Version", string.Empty)
-                .Replace("- Original Mix", string.Empty)
-                .Replace("(Original Mix)", string.Empty)
-                .Trim();
+            var misleadingWords = new[] {
+                                            "Original Version", "Radio Edit", "Single Version", "Original Mix",
+                                            "Explicit Version"
+                                        };
+
+            var formats = new[] {"- {0}", "({0})"};
+            return misleadingWords.Aggregate(track,
+                                              (currentWord, word) =>
+                                              formats.Aggregate(currentWord, (current, format) =>
+                                                  current.Replace(string.Format(format, word), string.Empty)))
+                                                  .Trim();
         }
     }
 }
