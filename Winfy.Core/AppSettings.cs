@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Caliburn.Micro;
 
 namespace Winfy.Core {
@@ -15,6 +12,12 @@ namespace Winfy.Core {
         public bool AlwaysOnTop {
             get { return _AlwaysOnTop; }
             set { _AlwaysOnTop = value; NotifyOfPropertyChange(() => AlwaysOnTop); }
+        }
+
+        private bool _StartWithWindows;
+        public bool StartWithWindows {
+            get { return _StartWithWindows; }
+            set { _StartWithWindows = value; NotifyOfPropertyChange(() => StartWithWindows); }
         }
 
         public List<WindowPosition> Positions { get; set; }

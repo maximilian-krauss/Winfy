@@ -1,5 +1,15 @@
 [
 	{
+		"version" : "2.0.0.10",
+		"description" : "now sugar free!",
+		"changes": [
+			"New: Autorun",
+			"Fixed: Changelog could be null",
+			"Improved: Better cover recognition",
+			"Improved: Questionmark if no cover is found"
+		]
+	},
+	{
 		"version" : "2.0.0.9",
 		"description" : "still beta",
 		"changes": [

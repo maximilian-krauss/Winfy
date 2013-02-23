@@ -7,7 +7,13 @@
              MaxWidth="400"
              >
     <StackPanel Margin="20 10" Orientation="Vertical">
+        <StackPanel.Resources>
+            <Style TargetType="{x:Type CheckBox}">
+                <Setter Property="Margin" Value="0 2" />
+            </Style>
+        </StackPanel.Resources>
         <CheckBox Content="Show Winfy always on top of other windows" Name="AlwaysOnTop" />
+        <CheckBox Content="Start Winfy after I log into my computer" Name="StartWithWindows" />
         
         <GroupBox Header="Cover cache" Margin="0 10">
             <Grid Margin="5">
@@ -27,7 +33,7 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Current cache size:" TextAlignment="Right" Margin="5" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Name="CacheSize" FontWeight="Bold" TextAlignment="Left" Margin="5" />
                 
-                <RepeatButton  Margin="0 10" Name="ClearCache" Content="Clear cover cache" Grid.Row="2" Grid.ColumnSpan="2" />
+                <Button  Margin="0 10" Name="ClearCache" Content="Clear cover cache" Grid.Row="2" Grid.ColumnSpan="2" />
             </Grid>
         </GroupBox>
     </StackPanel>

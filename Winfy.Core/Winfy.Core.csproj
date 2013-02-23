@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AppContracts.cs" />
     <Compile Include="AppSettings.cs" />
+    <Compile Include="AutorunService.cs" />
     <Compile Include="CoverService.cs" />
     <Compile Include="Deployment\AppDeployment.cs" />
     <Compile Include="Deployment\Release.cs" />

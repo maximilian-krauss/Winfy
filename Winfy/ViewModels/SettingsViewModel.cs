@@ -28,6 +28,11 @@ namespace Winfy.ViewModels {
             set { _Settings.AlwaysOnTop = value; NotifyOfPropertyChange(() => AlwaysOnTop); }
         }
 
+        public bool StartWithWindows {
+            get { return _Settings.StartWithWindows; }
+            set { _Settings.StartWithWindows = value; NotifyOfPropertyChange(() => StartWithWindows); }
+        }
+
         private bool _CanClearCache = true;
         public bool CanClearCache {
             get { return _CanClearCache; }

@@ -37,6 +37,7 @@ namespace Winfy {
             Container.Register<AppContracts>(_Contracts);
             Container.Register<AppSettings>(_Settings);
             Container.Register<Logger>(_Logger);
+            Container.Register<AutorunService>(new AutorunService(_Logger, _Settings, _Contracts));
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
             Container.Register<ISpotifyController>(new SpotifyController(_Logger));
             Container.Register<ICoverService>(new CoverService(_Contracts, _Logger));
