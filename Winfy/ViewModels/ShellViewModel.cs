@@ -23,6 +23,7 @@ namespace Winfy.ViewModels {
         private readonly AppSettings _Settings;
         private readonly Logger _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
+        private const string UnknownCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoUnknown.png";
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateController updateController) {
             _WindowManager = windowManager;
@@ -116,10 +117,11 @@ namespace Winfy.ViewModels {
                 CanPlayNext = _SpotifyController.IsSpotifyOpen();
 
                 if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
+                    CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
                     var updateCoverAction = new Action(() => {
                                                            var coverUri = _CoverService.FetchCover(artist, track);
                                                            if (string.IsNullOrEmpty(coverUri))
-                                                               coverUri = NoCoverUri;
+                                                               coverUri = UnknownCoverUri;
                                                            CoverImage = coverUri;
                                                        });
                     updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);

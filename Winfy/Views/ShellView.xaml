@@ -5,12 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             MinHeight="174"
-             MinWidth="174"
-             MaxWidth="174"
-             Background="#000000"
-             Foreground="#FFFFFF">
-    <Border BorderBrush="#000000" BorderThickness="0">
+             MinHeight="174" MinWidth="174" MaxWidth="174" Padding="0"
+             Background="#000000" FontFamily="Segoe UI"
+             Foreground="#FFFFFF" BorderBrush="#000000">
+    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
         <Border.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="About Winfy..." cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
@@ -30,7 +28,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
-            <Border Grid.Row="0">
+            <Border Grid.Row="0" BorderBrush="{x:Null}" BorderThickness="0" Padding="0">
                 <Border.Background>
                     <ImageBrush ImageSource="{Binding CoverImage}"/>
                 </Border.Background>
@@ -39,7 +37,7 @@
             
             <StackPanel Grid.Row="1" Margin="5">
                 <TextBlock Name="CurrentTrack" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
-                <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Light" />
+                <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" />
             </StackPanel>
             
         </Grid>
