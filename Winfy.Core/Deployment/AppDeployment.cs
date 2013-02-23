@@ -124,6 +124,7 @@ namespace Winfy.Core.Deployment {
             }
             catch (Exception exc) {
                 _Logger.WarnException("Failed to get the changelog :-(", exc);
+                Changelog = new List<Release>();
             }
             finally {
                 OnUpdateReady(new UpdateReadyEventArgs {
