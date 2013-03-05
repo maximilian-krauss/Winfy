@@ -137,10 +137,10 @@ namespace Winfy.Core {
             //By removing these strings, we raise the chance to find a proper cover image
             var misleadingWords = new[] {
                                             "Original Version", "Radio Edit", "Single Version", "Original Mix",
-                                            "Explicit Version"
+                                            "Explicit Version", "Single Mix"
                                         };
 
-            var formats = new[] {"- {0}", "({0})"};
+            var formats = new[] {"- {0}", "({0})", "[{0}]"};
             return misleadingWords.Aggregate(track,
                                               (currentWord, word) =>
                                               formats.Aggregate(currentWord, (current, format) =>

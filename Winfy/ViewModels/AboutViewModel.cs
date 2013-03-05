@@ -22,7 +22,7 @@ namespace Winfy.ViewModels {
         public Version ApplicationVersion { get { return _Contracts.ApplicationVersion; } }
 
         public void GoHome() {
-            Process.Start(_Contracts.HomepageUrl);
+            Helper.OpenUrl(_Contracts.HomepageUrl);
         }
 
     }

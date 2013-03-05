@@ -1,8 +1,10 @@
 ﻿using Caliburn.Micro;
+using Microsoft.Win32;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,23 +25,23 @@ namespace Winfy.Core {
         public event EventHandler SpotifyOpened;
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
+        private static extern int GetWindowTextLength(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true)]
-        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
-        static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
 
         [DllImport("user32")]
-        static extern bool GetMessage(ref Message lpMsg, IntPtr handle, uint mMsgFilterInMain, uint mMsgFilterMax);
+        private static extern bool GetMessage(ref Message lpMsg, IntPtr handle, uint mMsgFilterInMain, uint mMsgFilterMax);
 
         [DllImport("user32.dll")]
         private static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
@@ -47,16 +49,14 @@ namespace Winfy.Core {
         [DllImport("user32.dll")]
         private static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 
-        const uint EventObjectNamechange = 0x800c;
-        const uint EventObjectCreate = 0x00008000; 
-        const uint WineventOutofcontext = 0;
-
         const int KeyMessage = 0x319;
         const int ControlKey = 0x11;
 
         const long PlaypauseKey = 0xE0000L;
         const long NexttrackKey = 0xB0000L;
         const long PreviousKey = 0xC0000L;
+
+        private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
         private readonly Logger _Logger;
 
@@ -187,6 +187,17 @@ namespace Winfy.Core {
 
         public bool IsSpotifyOpen() {
             return _SpotifyProcess != null;
+        }
+
+        public bool IsSpotifyInstalled() {
+            try {
+                var registryKey = Registry.CurrentUser.OpenSubKey(SpotifyRegistryKey, false);
+                return registryKey != null && File.Exists((string) registryKey.GetValue("DisplayIcon", string.Empty));
+            }
+            catch (Exception exc) {
+                _Logger.WarnException("Failed to detect if Spotify is installed or not :(", exc);
+                return false;
+            }
         }
 
         public string GetSongName() {

@@ -9,6 +9,7 @@ namespace Winfy.Core {
         event EventHandler SpotifyOpened;
         event EventHandler SpotifyExited;
         bool IsSpotifyOpen();
+        bool IsSpotifyInstalled();
         string GetSongName();
         string GetArtistName();
         void PausePlay();

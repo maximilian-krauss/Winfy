@@ -32,6 +32,10 @@ namespace Winfy.Core {
             get { return "http://krausshq.com"; }
         }
 
+        public string SpotifyUrl {
+            get { return "https://www.spotify.com/"; }
+        }
+
         public string SettingsLocation {
             get {
                 var location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName);

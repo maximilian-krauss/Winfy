@@ -6,9 +6,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Net;
+using System.Windows;
+using System.Diagnostics;
 
 namespace Winfy.Core {
     public static class Helper {
+
+        public static void OpenUrl(string url) {
+            try {
+                Process.Start(url);
+            }
+            catch (Exception) {
+                MessageBox.Show(string.Format("Failed to open your default browser. Winfy tried to open the following url for you: {0}", url),
+                    "Winfy", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         public static bool IsDWMSupported {
             get { return Environment.OSVersion.Version.Major >= 6; }

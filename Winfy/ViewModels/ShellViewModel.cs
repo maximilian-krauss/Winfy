@@ -44,6 +44,15 @@ namespace Winfy.ViewModels {
             _UpdateController.StartBackgroundCheck();
         }
 
+        protected override void OnViewLoaded(object view) {
+            base.OnViewLoaded(view);
+
+            if (!_SpotifyController.IsSpotifyInstalled()) {
+                _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
+                TryClose();
+            }
+        }
+
         #region Properties
 
         private string _CurrentTrack;

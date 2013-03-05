@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Winfy.Views.NoSpotifyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
+             >
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Light" FontSize="22" Foreground="#80AF10">
+            Whoops, looks like there is no Spotify installed :-(
+        </TextBlock>
+        
+        <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" MaxWidth="500" Margin="0 10" FontSize="14">
+            Spotify is required in order to use Winfy. Winfy displays the track and artist that is currently playing in Spotify. It's more like an addition than an independent application. You can use Spotify for free, all you need to do is to visit the Spotify-Website (button below) and download the client. That's it :)
+        </TextBlock>
+        
+        <Border Grid.Row="2" Grid.Column="0" Margin="0 5">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="0 0 6 0" />
+                        <Setter Property="Padding" Value="6 2" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button Name="Close">Close</Button>
+                <Button Name="GoToSpotify">Go to Spotify</Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
