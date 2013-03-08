@@ -42,6 +42,10 @@ namespace Winfy {
             if(rootModel is ShellViewModel)
                 SetupShell(wnd);
 
+            var canToggleVisibility = (rootModel as IToggleVisibility);
+            if (canToggleVisibility != null)
+                canToggleVisibility.ToggleVisibility += (o, e) => wnd.Visibility = e.Visibility;                           
+
             return wnd;
         }
 

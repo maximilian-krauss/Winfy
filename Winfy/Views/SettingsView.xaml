@@ -14,6 +14,7 @@
         </StackPanel.Resources>
         <CheckBox Content="Show Winfy always on top of other windows" Name="AlwaysOnTop" />
         <CheckBox Content="Start Winfy after I log into my computer" Name="StartWithWindows" />
+        <CheckBox Content="Hide Winfy when Spotify is not running" Name="HideIfSpotifyClosed" />
         
         <GroupBox Header="Cover cache" Margin="0 10">
             <Grid Margin="5">

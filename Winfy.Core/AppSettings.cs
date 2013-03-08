@@ -20,6 +20,12 @@ namespace Winfy.Core {
             set { _StartWithWindows = value; NotifyOfPropertyChange(() => StartWithWindows); }
         }
 
+        private bool _HideIfSpotifyClosed;
+        public bool HideIfSpotifyClosed {
+            get { return _HideIfSpotifyClosed; }
+            set { _HideIfSpotifyClosed = value; NotifyOfPropertyChange(() => HideIfSpotifyClosed); }
+        }
+
         public List<WindowPosition> Positions { get; set; }
 
     }

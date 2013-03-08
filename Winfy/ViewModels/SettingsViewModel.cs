@@ -19,7 +19,6 @@ namespace Winfy.ViewModels {
             _CoverService = coverService;
             _Logger = logger;
             DisplayName = string.Format("Settings - {0}", _Contracts.ApplicationName);
-            AlwaysOnTop = _Settings.AlwaysOnTop;
             CacheSize = Helper.MakeNiceSize(_CoverService.CacheSize());
         }
 
@@ -31,6 +30,11 @@ namespace Winfy.ViewModels {
         public bool StartWithWindows {
             get { return _Settings.StartWithWindows; }
             set { _Settings.StartWithWindows = value; NotifyOfPropertyChange(() => StartWithWindows); }
+        }
+
+        public bool HideIfSpotifyClosed {
+            get { return _Settings.HideIfSpotifyClosed; }
+            set { _Settings.HideIfSpotifyClosed = value; NotifyOfPropertyChange(() => HideIfSpotifyClosed); }
         }
 
         private bool _CanClearCache = true;

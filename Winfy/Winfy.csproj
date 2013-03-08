@@ -29,7 +29,7 @@
     <InstallUrl>http://deploy.krausshq.com/winfy/</InstallUrl>
     <UpdateUrl>http://deploy.krausshq.com/winfy/</UpdateUrl>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
-    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -108,8 +108,10 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
+    <Compile Include="IToggleVisibility.cs" />
     <Compile Include="TinyBootstrapper.cs" />
     <Compile Include="TinyIoC.cs" />
+    <Compile Include="ToggleVisibilityEventArgs.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="ViewModels\NoSpotifyViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />

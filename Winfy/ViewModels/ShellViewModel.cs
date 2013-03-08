@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Caliburn.Micro;
@@ -14,7 +15,7 @@ using TinyIoC;
 using NLog;
 
 namespace Winfy.ViewModels {
-    public sealed class ShellViewModel : Screen {
+    public sealed class ShellViewModel : Screen, IToggleVisibility {
         private readonly IWindowManager _WindowManager;
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
@@ -24,6 +25,8 @@ namespace Winfy.ViewModels {
         private readonly Logger _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoUnknown.png";
+
+        public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
 
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateController updateController) {
             _WindowManager = windowManager;
@@ -38,8 +41,8 @@ namespace Winfy.ViewModels {
             UpdateView();
 
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
-            _SpotifyController.SpotifyOpened += (o, e) => UpdateView();
-            _SpotifyController.SpotifyExited += (o, e) => UpdateView();
+            _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
+            _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
             _UpdateController.UpdateReady += UpdateReady;
             _UpdateController.StartBackgroundCheck();
         }
@@ -50,7 +53,11 @@ namespace Winfy.ViewModels {
             if (!_SpotifyController.IsSpotifyInstalled()) {
                 _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
                 TryClose();
+                return;
             }
+
+            if(_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
+                OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
         }
 
         #region Properties
@@ -113,6 +120,20 @@ namespace Winfy.ViewModels {
             _SpotifyController.NextTrack();
         }
 
+        private void SpotifyOpened() {
+            if(_Settings.HideIfSpotifyClosed)
+                OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
+
+            UpdateView();
+        }
+
+        private void SpotifyExited() {
+            if(_Settings.HideIfSpotifyClosed)
+                OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
+
+            UpdateView();
+        }
+
         private void UpdateView() {
             try {
                 var track = _SpotifyController.GetSongName();
@@ -163,6 +184,14 @@ namespace Winfy.ViewModels {
                                                                                    {"changelog",e.Changelog}
                                                                                }))));
 
+        }
+        
+
+        private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
+            Execute.OnUIThread(() => {
+                                   var handler = ToggleVisibility;
+                                   if (handler != null) handler(this, e);
+                               });
         }
     }
 }

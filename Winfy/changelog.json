@@ -1,5 +1,12 @@
 [
 	{
+		"version": "1.0.0.12",
+		"description": "can I haz features?",
+		"changes" : [
+			"New: You can now hide Winfy if Spotify is not running :)"
+		]
+	},
+	{
 		"version" : "1.0.0.11",
 		"description": "no more beta!",
 		"changes" : [
