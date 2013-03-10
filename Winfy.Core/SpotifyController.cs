@@ -137,16 +137,9 @@ namespace Winfy.Core {
         }
 
         private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime) {
-            if ((idObject == 0) && (idChild == 0)) {
-                var song = GetSongName();
-                var artist = GetArtistName();
-
-                if (hwnd.ToInt32() == _SpotifyProcess.MainWindowHandle.ToInt32()) {
-                    if (!string.IsNullOrWhiteSpace(song) || !string.IsNullOrWhiteSpace(artist)) {
-                        OnTrackChanged();
-                    }
-                }
-            }
+            if ((idObject == 0) && (idChild == 0))
+                if (hwnd.ToInt32() == _SpotifyProcess.MainWindowHandle.ToInt32())
+                    OnTrackChanged();
         }
 
         private void BackgroundChangeTrackerWork() {
@@ -162,9 +155,8 @@ namespace Winfy.Core {
 
                     var hWinEventHook = SetWinEventHook(0x0800c, 0x800c, IntPtr.Zero, _ProcDelegate, Convert.ToUInt32(pidSpotify), 0, 0);
                     var msg = new Message();
-                    while (GetMessage(ref msg, hwndSpotify, 0, 0)) {
+                    while (GetMessage(ref msg, hwndSpotify, 0, 0))
                         UnhookWinEvent(hWinEventHook);
-                    }
                 }
             }
             catch (ThreadAbortException) { /* Thread was aborted, accept it */ }

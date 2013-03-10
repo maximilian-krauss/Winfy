@@ -8,10 +8,10 @@ using Winfy.Core.Deployment;
 
 namespace Winfy.ViewModels {
     public sealed class UpdateReadyViewModel : Screen {
-        private readonly IUpdateController _UpdateController;
+        private readonly IUpdateService _UpdateController;
         private readonly AppContracts _Contracts;
 
-        public UpdateReadyViewModel(IUpdateController updateController, AppContracts contracts, Version newVersion, List<Release> changelog) {
+        public UpdateReadyViewModel(IUpdateService updateController, AppContracts contracts, Version newVersion, List<Release> changelog) {
             _UpdateController = updateController;
             _Contracts = contracts;
             NewVersion = newVersion.ToString();

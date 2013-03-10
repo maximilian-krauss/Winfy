@@ -108,6 +108,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
+    <Compile Include="Converter\VisibilityConverter.cs" />
     <Compile Include="IToggleVisibility.cs" />
     <Compile Include="TinyBootstrapper.cs" />
     <Compile Include="TinyIoC.cs" />

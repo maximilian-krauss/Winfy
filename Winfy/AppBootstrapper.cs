@@ -41,7 +41,7 @@ namespace Winfy {
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
             Container.Register<ISpotifyController>(new SpotifyController(_Logger));
             Container.Register<ICoverService>(new CoverService(_Contracts, _Logger));
-            Container.Register<IUpdateController>(new UpdateController(_Logger));
+            Container.Register<IUpdateService>(new UpdateService(_Logger));
         }
 
         protected override void OnExit(object sender, EventArgs e) {

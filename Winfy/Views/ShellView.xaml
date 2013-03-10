@@ -18,6 +18,9 @@
                 <MenuItem Header="Previous track" cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
                 <MenuItem Header="Next track" cal:Message.Attach="[Event Click] = [Action PlayNext]" />
                 <Separator/>
+                <MenuItem Header="Volume Up" cal:Message.Attach="[Event Click] = [Action VolumeUp]" />
+                <MenuItem Header="Volume Down" cal:Message.Attach="[Event Click] = [Action VolumeDown]" />
+                <Separator />
                 <MenuItem Header="Exit" cal:Message.Attach="[Event Click] = [Action TryClose]" />
             </ContextMenu>
         </Border.ContextMenu>
@@ -35,7 +38,7 @@
                 <Image Source="/Images/cover.png" Stretch="None"   />
             </Border>
             
-            <StackPanel Grid.Row="1" Margin="5">
+            <StackPanel Grid.Row="1" Margin="5" Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}">
                 <TextBlock Name="CurrentTrack" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
                 <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" />
             </StackPanel>

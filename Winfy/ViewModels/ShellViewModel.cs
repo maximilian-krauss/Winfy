@@ -1,13 +1,8 @@
 ﻿using System.Runtime.Remoting.Messaging;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Winfy.Core;
 using Winfy.Core.Deployment;
 using Action = System.Action;
@@ -20,7 +15,7 @@ namespace Winfy.ViewModels {
         private readonly ISpotifyController _SpotifyController;
         private readonly ICoverService _CoverService;
         private readonly IEventAggregator _EventAggregator;
-        private readonly IUpdateController _UpdateController;
+        private readonly IUpdateService _UpdateService;
         private readonly AppSettings _Settings;
         private readonly Logger _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
@@ -28,14 +23,14 @@ namespace Winfy.ViewModels {
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
 
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateController updateController) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateService updateService) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
             _EventAggregator = eventAggregator;
             _Settings = settings;
             _Logger = logger;
-            _UpdateController = updateController;
+            _UpdateService = updateService;
 
             CoverImage = NoCoverUri;
             UpdateView();
@@ -43,8 +38,8 @@ namespace Winfy.ViewModels {
             _SpotifyController.TrackChanged += (o, e) => UpdateView();
             _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
             _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
-            _UpdateController.UpdateReady += UpdateReady;
-            _UpdateController.StartBackgroundCheck();
+            _UpdateService.UpdateReady += UpdateReady;
+            _UpdateService.StartBackgroundCheck();
         }
 
         protected override void OnViewLoaded(object view) {
@@ -98,6 +93,12 @@ namespace Winfy.ViewModels {
             set { _CanPlayNext = value; NotifyOfPropertyChange(() => CanPlayNext); }
         }
 
+        private bool _HasTrackInformation;
+        public bool HasTrackInformation {
+            get { return _HasTrackInformation; }
+            set { _HasTrackInformation = value; NotifyOfPropertyChange(() => HasTrackInformation); }
+        }
+
         #endregion
 
         public void ShowSettings() {
@@ -120,6 +121,14 @@ namespace Winfy.ViewModels {
             _SpotifyController.NextTrack();
         }
 
+        public void VolumeUp() {
+            _SpotifyController.VolumeUp();
+        }
+
+        public void VolumeDown() {
+            _SpotifyController.VolumeDown();
+        }
+
         private void SpotifyOpened() {
             if(_Settings.HideIfSpotifyClosed)
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
@@ -139,6 +148,7 @@ namespace Winfy.ViewModels {
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
 
+                HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
                 CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
                 CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
 
@@ -175,7 +185,7 @@ namespace Winfy.ViewModels {
 
         void UpdateReady(object sender, UpdateReadyEventArgs e) {
             if(e.IsRequired) //important update, do the restart asap
-                _UpdateController.Restart();
+                _UpdateService.Restart();
 
             Execute.OnUIThread(() => _WindowManager.ShowDialog(
                 TinyIoCContainer.Current.Resolve<UpdateReadyViewModel>(

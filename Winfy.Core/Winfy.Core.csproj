@@ -66,9 +66,9 @@
     <Compile Include="Deployment\Release.cs" />
     <Compile Include="Deployment\FakeDeployment.cs" />
     <Compile Include="Deployment\IDeployment.cs" />
-    <Compile Include="Deployment\IUpdateController.cs" />
+    <Compile Include="Deployment\IUpdateService.cs" />
     <Compile Include="Deployment\NoDeployment.cs" />
-    <Compile Include="Deployment\UpdateController.cs" />
+    <Compile Include="Deployment\UpdateService.cs" />
     <Compile Include="Deployment\UpdateReadyEventArgs.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helper.cs" />

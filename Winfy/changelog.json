@@ -1,5 +1,14 @@
 [
 	{
+		"version": "1.0.0.13",
+		"description": "features!",
+		"changes": [
+			"Improved: Track and artists fields are hidden when no track is playing",
+			"Improved: Winfy detects play/pause better",
+			"New: You can adjust the volume through Winfy"
+		]
+	},
+	{
 		"version": "1.0.0.12",
 		"description": "can I haz features?",
 		"changes" : [
