@@ -4,7 +4,7 @@ using System.Deployment.Application;
 using System.Timers;
 
 namespace Winfy.Core.Deployment {
-    public class UpdateController : IUpdateController {
+    public class UpdateService : IUpdateService {
         public event EventHandler<UpdateReadyEventArgs> UpdateReady;
 
         private readonly Logger _Logger;
@@ -15,7 +15,7 @@ namespace Winfy.Core.Deployment {
         private DateTime _NextUpdateCheck;
         private bool _UpdateCheckIsBusy;
 
-        public UpdateController(Logger logger) {
+        public UpdateService(Logger logger) {
             _Logger = logger;
             _UpdateCheckInterval = new TimeSpan(0, 1, 0, 0); //Check for updates every hour, because quick deploy is nice
             _Deployment = ApplicationDeployment.IsNetworkDeployed

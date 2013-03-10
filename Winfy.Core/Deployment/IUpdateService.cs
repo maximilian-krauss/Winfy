@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Winfy.Core.Deployment {
-    public interface IUpdateController {
+    public interface IUpdateService {
         event EventHandler<UpdateReadyEventArgs> UpdateReady;
 
         void StartBackgroundCheck();
