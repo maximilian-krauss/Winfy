@@ -16,6 +16,7 @@ namespace Winfy.ViewModels {
         private readonly ICoverService _CoverService;
         private readonly IEventAggregator _EventAggregator;
         private readonly IUpdateService _UpdateService;
+        private readonly IUsageTrackerService _UsageTrackerService;
         private readonly AppSettings _Settings;
         private readonly Logger _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
@@ -23,7 +24,7 @@ namespace Winfy.ViewModels {
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
 
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateService updateService) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateService updateService, IUsageTrackerService usageTrackerService) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
@@ -31,6 +32,7 @@ namespace Winfy.ViewModels {
             _Settings = settings;
             _Logger = logger;
             _UpdateService = updateService;
+            _UsageTrackerService = usageTrackerService;
 
             CoverImage = NoCoverUri;
             UpdateView();
@@ -40,6 +42,7 @@ namespace Winfy.ViewModels {
             _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
             _UpdateService.UpdateReady += UpdateReady;
             _UpdateService.StartBackgroundCheck();
+            _UsageTrackerService.Track();
         }
 
         protected override void OnViewLoaded(object view) {

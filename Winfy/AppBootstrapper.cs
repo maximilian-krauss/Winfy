@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Deployment.Application;
 using Caliburn.Micro.TinyIOC;
 using Winfy.Core;
 using Winfy.ViewModels;
@@ -42,6 +43,9 @@ namespace Winfy {
             Container.Register<ISpotifyController>(new SpotifyController(_Logger));
             Container.Register<ICoverService>(new CoverService(_Contracts, _Logger));
             Container.Register<IUpdateService>(new UpdateService(_Logger));
+            Container.Register<IUsageTrackerService>(ApplicationDeployment.IsNetworkDeployed
+                                                         ? new UsageTrackerService(_Settings, _Logger, _Contracts)
+                                                         : new LocalUsageTrackerService(_Settings, _Logger, _Contracts));
         }
 
         protected override void OnExit(object sender, EventArgs e) {

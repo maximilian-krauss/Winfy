@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using Caliburn.Micro;
+using System;
 
 namespace Winfy.Core {
     public sealed class AppSettings : PropertyChangedBase {
 
         public AppSettings() {
             Positions = new List<WindowPosition>();
+            UniqueApplicationIdentifier = Guid.NewGuid().ToString();
         }
 
         private bool _AlwaysOnTop;
@@ -27,6 +29,7 @@ namespace Winfy.Core {
         }
 
         public List<WindowPosition> Positions { get; set; }
+        public string UniqueApplicationIdentifier { get; set; }
 
     }
 }

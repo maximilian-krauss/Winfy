@@ -74,9 +74,12 @@
     <Compile Include="Helper.cs" />
     <Compile Include="ICoverService.cs" />
     <Compile Include="ISpotifyController.cs" />
+    <Compile Include="IUsageTrackerService.cs" />
+    <Compile Include="LocalUsageTrackerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="SpotifyController.cs" />
+    <Compile Include="UsageTrackerService.cs" />
     <Compile Include="WindowPosition.cs" />
   </ItemGroup>
   <ItemGroup>
