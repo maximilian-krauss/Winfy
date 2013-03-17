@@ -12,7 +12,7 @@ using NLog;
 namespace Winfy.Core.Deployment {
     public sealed class FakeDeployment : AppDeployment {
         
-        public FakeDeployment(Logger logger) : base(logger) {
+        public FakeDeployment(ILog logger) : base(logger) {
         }
 
         public override void Update() {

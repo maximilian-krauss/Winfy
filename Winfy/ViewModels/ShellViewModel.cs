@@ -18,13 +18,13 @@ namespace Winfy.ViewModels {
         private readonly IUpdateService _UpdateService;
         private readonly IUsageTrackerService _UsageTrackerService;
         private readonly AppSettings _Settings;
-        private readonly Logger _Logger;
+        private readonly Core.ILog _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
         private const string UnknownCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoUnknown.png";
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
 
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Logger logger, IUpdateService updateService, IUsageTrackerService usageTrackerService) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Core.ILog logger, IUpdateService updateService, IUsageTrackerService usageTrackerService) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;

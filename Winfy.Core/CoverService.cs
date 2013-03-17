@@ -49,9 +49,9 @@ namespace Winfy.Core {
         private const string CacheFileNameTemplate = "{0}.jpg";
         private readonly AppContracts _Contracts;
         private readonly string _CacheDirectory;
-        private readonly Logger _Logger;
+        private readonly ILog _Logger;
 
-        public CoverService(AppContracts contracts, Logger logger) {
+        public CoverService(AppContracts contracts, ILog logger) {
             _Contracts = contracts;
             _CacheDirectory = Path.Combine(contracts.SettingsLocation, "CoverCache");
             _Logger = logger;

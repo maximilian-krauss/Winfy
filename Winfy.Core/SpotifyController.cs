@@ -58,7 +58,7 @@ namespace Winfy.Core {
 
         private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
-        private readonly Logger _Logger;
+        private readonly ILog _Logger;
 
         private Process _SpotifyProcess;
         private Thread _BackgroundChangeTracker;
@@ -67,7 +67,7 @@ namespace Winfy.Core {
 
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
-        public SpotifyController(Logger logger) {
+        public SpotifyController(ILog logger) {
             _Logger = logger;
             AttachToProcess();
             JoinBackgroundProcess();

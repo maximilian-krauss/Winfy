@@ -7,7 +7,7 @@ namespace Winfy.Core.Deployment {
     public class UpdateService : IUpdateService {
         public event EventHandler<UpdateReadyEventArgs> UpdateReady;
 
-        private readonly Logger _Logger;
+        private readonly ILog _Logger;
         private readonly IDeployment _Deployment;
         private readonly Timer _UpdateTimer;
         private readonly TimeSpan _UpdateCheckInterval;
@@ -15,7 +15,7 @@ namespace Winfy.Core.Deployment {
         private DateTime _NextUpdateCheck;
         private bool _UpdateCheckIsBusy;
 
-        public UpdateService(Logger logger) {
+        public UpdateService(ILog logger) {
             _Logger = logger;
             _UpdateCheckInterval = new TimeSpan(0, 1, 0, 0); //Check for updates every hour, because quick deploy is nice
             _Deployment = ApplicationDeployment.IsNetworkDeployed

@@ -1,5 +1,20 @@
 [
 	{
+		"version": "1.0.0.15",
+		"description": "moooore changes",
+		"changes": [
+			"Fixed: Changes on the always on top setting are now applied immediately",
+			""
+		]
+	},
+	{
+		"version": "1.0.0.14",
+		"description": "yet another update",
+		"changes": [
+			"Improved: Some internal fixes"
+		]
+	},
+	{
 		"version": "1.0.0.13",
 		"description": "features!",
 		"changes": [

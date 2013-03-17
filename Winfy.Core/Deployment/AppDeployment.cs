@@ -50,11 +50,11 @@ namespace Winfy.Core.Deployment {
 
         public event EventHandler<UpdateReadyEventArgs> UpdateReady;
 
-        private readonly Logger _Logger;
+        private readonly ILog _Logger;
         private readonly ApplicationDeployment _Deployment;
         private const string ChangelogLocation = "http://deploy.krausshq.com/winfy/changelog.json";
 
-        public AppDeployment(Logger logger) {
+        public AppDeployment(ILog logger) {
             _Logger = logger;
             if (ApplicationDeployment.IsNetworkDeployed) {
                 _Deployment = ApplicationDeployment.CurrentDeployment;

@@ -11,9 +11,9 @@ namespace Winfy.ViewModels {
         private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
         private readonly ICoverService _CoverService;
-        private readonly Logger _Logger;
+        private readonly Core.ILog _Logger;
 
-        public SettingsViewModel(AppSettings settings, AppContracts contracts, ICoverService coverService, Logger logger) {
+        public SettingsViewModel(AppSettings settings, AppContracts contracts, ICoverService coverService, Core.ILog logger) {
             _Settings = settings;
             _Contracts = contracts;
             _CoverService = coverService;

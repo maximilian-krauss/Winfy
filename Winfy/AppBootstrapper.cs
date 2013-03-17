@@ -15,12 +15,12 @@ namespace Winfy {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
-        private Logger _Logger;
         private string _SettingsPath;
 
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
             base.OnStartup(sender, e);
 
+            //TODO: Find a better way
             if(Process.GetProcessesByName("Winfy").Length > 1)
                 Application.Shutdown();
         }
@@ -28,24 +28,24 @@ namespace Winfy {
         protected override void Configure() {
             base.Configure();
 
-            _Logger = NLog.LogManager.GetCurrentClassLogger();
             _Contracts = new AppContracts();
             _SettingsPath = Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename);
             _Settings = File.Exists(_SettingsPath)
                             ? Serializer.DeserializeFromJson<AppSettings>(_SettingsPath)
                             : new AppSettings();
 
+            
             Container.Register<AppContracts>(_Contracts);
             Container.Register<AppSettings>(_Settings);
-            Container.Register<Logger>(_Logger);
-            Container.Register<AutorunService>(new AutorunService(_Logger, _Settings, _Contracts));
+            Container.Register<Core.ILog>(new ProductionLogger());
+            Container.Register<AutorunService>(new AutorunService(Container.Resolve<Core.ILog>(), _Settings, _Contracts));
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
-            Container.Register<ISpotifyController>(new SpotifyController(_Logger));
-            Container.Register<ICoverService>(new CoverService(_Contracts, _Logger));
-            Container.Register<IUpdateService>(new UpdateService(_Logger));
+            Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<Core.ILog>()));
+            Container.Register<ICoverService>(new CoverService(_Contracts, Container.Resolve<Core.ILog>()));
+            Container.Register<IUpdateService>(new UpdateService(Container.Resolve<Core.ILog>()));
             Container.Register<IUsageTrackerService>(ApplicationDeployment.IsNetworkDeployed
-                                                         ? new UsageTrackerService(_Settings, _Logger, _Contracts)
-                                                         : new LocalUsageTrackerService(_Settings, _Logger, _Contracts));
+                                                         ? new UsageTrackerService(_Settings, Container.Resolve<Core.ILog>(), _Contracts)
+                                                         : new LocalUsageTrackerService(_Settings, Container.Resolve<Core.ILog>(), _Contracts));
         }
 
         protected override void OnExit(object sender, EventArgs e) {

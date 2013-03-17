@@ -1,18 +1,17 @@
 ﻿using Microsoft.Win32;
-using NLog;
 using System;
 using System.Windows;
 
 namespace Winfy.Core {
     public sealed class AutorunService {
-        private readonly Logger _Logger;
+        private readonly ILog _Logger;
         private readonly AppSettings _Settings;
         private readonly AppContracts _Contracts;
         private readonly RegistryKey _AutorunHive;
 
         private const string AutorunSettingsName = "StartWithWindows";
         
-        public AutorunService(Logger logger, AppSettings settings, AppContracts contracts) {
+        public AutorunService(ILog logger, AppSettings settings, AppContracts contracts) {
             _Logger = logger;
             _Settings = settings;
             _Contracts = contracts;
