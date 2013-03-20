@@ -4,7 +4,7 @@
 		"description": "moooore changes",
 		"changes": [
 			"Fixed: Changes on the always on top setting are now applied immediately",
-			""
+			"New: Added credits for 3rd party libraries"
 		]
 	},
 	{

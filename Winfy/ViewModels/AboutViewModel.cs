@@ -16,10 +16,23 @@ namespace Winfy.ViewModels {
             _Contracts = contracts;
 
             DisplayName = string.Format("About - {0}", _Contracts.ApplicationName);
+            _UsedComponents = new Dictionary<string, string> {
+                                                                 {"Caliburn.Micro", "MIT License"},
+                                                                 {"NLog", "MIT License"},
+                                                                 {"TinyIoC", "Ms-PL"},
+                                                                 {"Caliburn.Micro.TinyIOC", "MIT License"}
+                                                             };
         }
 
         public string ApplicationName { get { return _Contracts.ApplicationName; } }
         public Version ApplicationVersion { get { return _Contracts.ApplicationVersion; } }
+
+        private Dictionary<string, string> _UsedComponents;
+        public Dictionary<string, string> UsedComponents {
+            get { return _UsedComponents; }
+            set { _UsedComponents = value; NotifyOfPropertyChange(() => UsedComponents); }
+        }
+        
 
         public void GoHome() {
             Helper.OpenUrl(_Contracts.HomepageUrl);

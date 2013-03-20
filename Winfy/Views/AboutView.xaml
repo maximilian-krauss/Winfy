@@ -8,11 +8,11 @@
     <Grid Margin="40 20">
         <Grid.Resources>
             <Style x:Key="LeftColumn" TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="10" />
+                <Setter Property="Margin" Value="10 5" />
                 <Setter Property="FontWeight" Value="Bold" />
             </Style>
             <Style x:Key="RightColumn" TargetType="{x:Type TextBlock}">
-                <Setter Property="Margin" Value="10" />
+                <Setter Property="Margin" Value="10 5" />
             </Style>
             <Style x:Key="HyperlinkButton" TargetType="Button">
                 <Setter Property="Template">
@@ -34,6 +34,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <Image Grid.Row="0" Grid.ColumnSpan="2" Source="/Images/Logo.png" Stretch="None" HorizontalAlignment="Center" />
@@ -46,7 +47,19 @@
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Created by" Style="{StaticResource LeftColumn}" />
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Maximilian Krauss" Style="{StaticResource RightColumn}" />
 
-        <Button Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" Focusable="False" cal:Message.Attach="[Event Click] = [Action GoHome]" HorizontalAlignment="Center">
+        <ListBox Grid.Row="4" Grid.ColumnSpan="2" Name="UsedComponents" HorizontalContentAlignment="Center" Margin="0 10">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="{Binding Key}" FontWeight="Bold" />
+                        <TextBlock Padding="5 0">-</TextBlock>
+                        <TextBlock Text="{Binding Value}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <Button Grid.Row="5" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" Focusable="False" cal:Message.Attach="[Event Click] = [Action GoHome]" HorizontalAlignment="Center">
             <TextBlock>
                 <Hyperlink Focusable="False">krausshq.com</Hyperlink>
             </TextBlock>
