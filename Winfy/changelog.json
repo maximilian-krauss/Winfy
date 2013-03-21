@@ -1,6 +1,6 @@
 [
 	{
-		"version": "1.0.0.15",
+		"version": "1.0.0.16",
 		"description": "moooore changes",
 		"changes": [
 			"Fixed: Changes on the always on top setting are now applied immediately",
