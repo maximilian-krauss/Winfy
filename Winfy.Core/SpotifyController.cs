@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Winfy.Core.SpotifyLocal;
 using Message = System.Windows.Forms.Message;
 using Timer = System.Threading.Timer;
 
@@ -59,16 +60,19 @@ namespace Winfy.Core {
         private const string SpotifyRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\Spotify";
 
         private readonly ILog _Logger;
+        private readonly SpotifyLocalApi _LocalApi;
 
         private Process _SpotifyProcess;
         private Thread _BackgroundChangeTracker;
         private Timer _ProcessWatcher;
         private WinEventDelegate _ProcDelegate;
+        private Status _CurrentTrackInfo;
 
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
-        public SpotifyController(ILog logger) {
+        public SpotifyController(ILog logger, SpotifyLocalApi localApi) {
             _Logger = logger;
+            _LocalApi = localApi;
             AttachToProcess();
             JoinBackgroundProcess();
 
@@ -88,6 +92,9 @@ namespace Winfy.Core {
             _SpotifyProcess = null;
             _SpotifyProcess = Process.GetProcessesByName("spotify").FirstOrDefault();
             if (_SpotifyProcess != null) {
+                //Renew token for Spotify local api
+                _LocalApi.RenewToken();
+
                 _SpotifyProcess.EnableRaisingEvents = true;
                 _SpotifyProcess.Exited += (o, e) => {
                                               _SpotifyProcess = null;
@@ -138,8 +145,18 @@ namespace Winfy.Core {
 
         private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime) {
             if ((idObject == 0) && (idChild == 0))
-                if (hwnd.ToInt32() == _SpotifyProcess.MainWindowHandle.ToInt32())
+                if (hwnd.ToInt32() == _SpotifyProcess.MainWindowHandle.ToInt32()) {
+                    try {
+                        _CurrentTrackInfo = _LocalApi.Status;
+                        if(_CurrentTrackInfo != null && _CurrentTrackInfo.Error != null)
+                            throw new Exception(string.Format("Spotify API error: {0}", _CurrentTrackInfo.Error.Message));
+                    }
+                    catch (Exception exc) {
+                        _Logger.WarnException("Failed to retrieve trackinfo", exc);
+                        _CurrentTrackInfo = null;
+                    }
                     OnTrackChanged();
+                }
         }
 
         private void BackgroundChangeTrackerWork() {
@@ -193,11 +210,17 @@ namespace Winfy.Core {
         }
 
         public string GetSongName() {
+            if (_CurrentTrackInfo != null && _CurrentTrackInfo.Track != null && _CurrentTrackInfo.Track.TrackResource != null)
+                return _CurrentTrackInfo.Track.TrackResource.Name;
+
             var title = GetSpotifyWindowTitle().Split('–');
             return title.Count() > 1 ? title[1].Trim() : string.Empty;
         }
 
         public string GetArtistName() {
+            if (_CurrentTrackInfo != null && _CurrentTrackInfo.Track != null && _CurrentTrackInfo.Track.ArtistResource != null)
+                return _CurrentTrackInfo.Track.ArtistResource.Name;
+
             var title = GetSpotifyWindowTitle().Split('–');
             return title.Count() > 1 ? title[0].Split('-')[1].Trim() : string.Empty;
         }

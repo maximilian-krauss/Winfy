@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.0.0.0",
+		"description": "yay 2.0",
+		"changes": [
+			"Major version jump to 2.0. Chrome style, whoop whoop :)",
+			"New: Winfy now utilizes the Spotify local API for better cover image support"
+		]
+	},
+	{
 		"version": "1.0.0.16",
 		"description": "moooore changes",
 		"changes": [

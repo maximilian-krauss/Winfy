@@ -20,7 +20,8 @@ namespace Winfy.ViewModels {
                                                                  {"Caliburn.Micro", "MIT License"},
                                                                  {"NLog", "MIT License"},
                                                                  {"TinyIoC", "Ms-PL"},
-                                                                 {"Caliburn.Micro.TinyIOC", "MIT License"}
+                                                                 {"Caliburn.Micro.TinyIOC", "MIT License"},
+                                                                 {"Newtonsoft Json.Net", "MIT License"}
                                                              };
         }
 

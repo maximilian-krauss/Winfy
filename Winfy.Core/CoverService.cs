@@ -6,55 +6,22 @@ using System.Net;
 using System.Web;
 using System.Xml.Serialization;
 using Winfy.Core.Extensions;
+using Winfy.Core.SpotifyLocal;
 
 namespace Winfy.Core {
     public class CoverService : ICoverService {
 
-        [XmlRoot(ElementName = "lfm")]
-        public class LastFmResponse {
-            [XmlAttribute(AttributeName = "status")]
-            public string Status { get; set; }
-
-            [XmlElement(ElementName = "track")]
-            public Track[] Track { get; set; }
-
-        }
-
-        [XmlType(TypeName = "track")]
-        public class Track {
-            [XmlElement("id")]
-            public int Id { get; set; }
-
-            [XmlElement("name")]
-            public string Name { get; set; }
-
-            [XmlElement("album")]
-            public Album Album { get; set; }
-        }
-
-        [XmlType(TypeName = "album")]
-        public class Album {
-            [XmlElement(ElementName = "image")]
-            public Image[] Image { get; set; }
-        }
-
-        public class Image {
-            [XmlAttribute(AttributeName = "size")]
-            public string Size { get; set; }
-
-            [XmlText]
-            public string Url { get; set; }
-        }
-
         private const string CacheFileNameTemplate = "{0}.jpg";
         private readonly AppContracts _Contracts;
         private readonly string _CacheDirectory;
+        private readonly SpotifyLocalApi _LocalApi;
         private readonly ILog _Logger;
 
-        public CoverService(AppContracts contracts, ILog logger) {
+        public CoverService(AppContracts contracts, ILog logger, SpotifyLocalApi localApi) {
             _Contracts = contracts;
             _CacheDirectory = Path.Combine(contracts.SettingsLocation, "CoverCache");
             _Logger = logger;
+            _LocalApi = localApi;
             if (!Directory.Exists(_CacheDirectory))
                 Directory.CreateDirectory(_CacheDirectory);
         }
@@ -77,10 +44,39 @@ namespace Winfy.Core {
         }
 
         public string FetchCover(string artist, string track) {
-            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (artist+ track).ToSHA1()));
+            var cachedFileName = Path.Combine(_CacheDirectory, string.Format(CacheFileNameTemplate, (artist + track).ToSHA1()));
             if (File.Exists(cachedFileName))
                 return cachedFileName;
 
+            var spotifyCover = FetchSpotifyCover(cachedFileName);
+            return string.IsNullOrEmpty(spotifyCover) ? FetchLastFmCover(artist, track, cachedFileName) : spotifyCover;
+        }
+
+        private string FetchSpotifyCover(string cachedFileName) {
+            if (!_LocalApi.HasValidToken)
+                return string.Empty;
+
+            try {
+                var trackStatus = _LocalApi.Status;
+                if (trackStatus != null) {
+                    if(trackStatus.Error != null)
+                        throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.Error.Message, trackStatus.Error.Type));
+
+                    if (trackStatus.Track != null && trackStatus.Track.AlbumResource != null) {
+                        var coverUrl = _LocalApi.GetArt(trackStatus.Track.AlbumResource.Uri);
+                        if (!string.IsNullOrEmpty(coverUrl))
+                            return DownloadAndSaveImage(coverUrl, cachedFileName);
+                    }
+                }
+            }
+            catch (Exception exc) {
+                _Logger.WarnException("Failed to retrieve cover from Spotify", exc);
+                
+            }
+            return string.Empty;
+        }
+
+        private string FetchLastFmCover(string artist, string track, string cachedFileName) {
             var requestUrl = string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={0}&track={1}&artist={2}",
                     _Contracts.LastFmApiKey,
                     HttpUtility.UrlEncode(CleanTrackName(track)),
