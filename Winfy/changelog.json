@@ -4,7 +4,8 @@
 		"description": "yay 2.0",
 		"changes": [
 			"Major version jump to 2.0. Chrome style, whoop whoop :)",
-			"New: Winfy now utilizes the Spotify local API for better cover image support"
+			"New: Winfy utilizes the Spotify local API for better cover image support",
+			"Improved: Auto-save for app settings every minute"
 		]
 	},
 	{

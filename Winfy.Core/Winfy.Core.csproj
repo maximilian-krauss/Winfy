@@ -79,6 +79,7 @@
     <Compile Include="ILog.cs" />
     <Compile Include="ISpotifyController.cs" />
     <Compile Include="IUsageTrackerService.cs" />
+    <Compile Include="JsonPersister.cs" />
     <Compile Include="LastFmPOCOs.cs" />
     <Compile Include="LocalUsageTrackerService.cs" />
     <Compile Include="ProductionLogger.cs" />

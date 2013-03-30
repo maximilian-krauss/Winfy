@@ -15,7 +15,7 @@ namespace Winfy {
 
         private AppSettings _Settings;
         private AppContracts _Contracts;
-        private string _SettingsPath;
+        private JsonPersister<AppSettings> _SettingsPersistor;
 
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
             base.OnStartup(sender, e);
@@ -29,12 +29,11 @@ namespace Winfy {
             base.Configure();
 
             _Contracts = new AppContracts();
-            _SettingsPath = Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename);
-            _Settings = File.Exists(_SettingsPath)
-                            ? Serializer.DeserializeFromJson<AppSettings>(_SettingsPath)
-                            : new AppSettings();
 
             
+            _SettingsPersistor = new JsonPersister<AppSettings>(Path.Combine(_Contracts.SettingsLocation, _Contracts.SettingsFilename));
+            _Settings = _SettingsPersistor.Instance;
+
             Container.Register<AppContracts>(_Contracts);
             Container.Register<AppSettings>(_Settings);
             Container.Register<Core.ILog>(new ProductionLogger());
@@ -53,7 +52,7 @@ namespace Winfy {
 
         protected override void OnExit(object sender, EventArgs e) {
             base.OnExit(sender, e);
-            Serializer.SerializeToJson(_Settings, _SettingsPath);
+            _SettingsPersistor.Dispose();
         }
     }
 }
