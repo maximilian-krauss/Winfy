@@ -35,6 +35,12 @@ namespace Winfy.Core {
         }
 
         public static void SerializeToJson<T>(T instance, string filename) {
+            if(string.IsNullOrEmpty(filename))
+                throw new ArgumentException("filename");
+
+            if (!Directory.Exists(Path.GetDirectoryName(filename)))
+                Directory.CreateDirectory(Path.GetDirectoryName(filename));
+
             File.WriteAllBytes(filename, SerializeToJson(instance));
         }
         public static byte[] SerializeToJson<T>(T instance) {

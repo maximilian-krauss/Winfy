@@ -36,6 +36,10 @@ namespace Winfy.Core {
             get { return "https://www.spotify.com/"; }
         }
 
+        public string SpotifyLocalHost {
+            get { return "winfy.spotilocal.com"; }
+        }
+
         public string SettingsLocation {
             get {
                 var location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName);
