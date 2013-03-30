@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Winfy.Core.SpotifyLocal {
     public class SpotifyLocalApi {
@@ -11,7 +13,7 @@ namespace Winfy.Core.SpotifyLocal {
         #region LICENSE
 
         /*
-          The SpotifyLocal-Api code was original developed by JariZ and is licensed under the terms of the Apache 2.0 License (see below).
+          The SpotifyLocal-Api code was original developed by JariZ<http://jariz.nl/> and is licensed under the terms of the Apache 2.0 License (see below).
          
           (This codes here features some improvements, cleanups and bugfixes which were made by Max)
          
@@ -74,6 +76,7 @@ namespace Winfy.Core.SpotifyLocal {
             _Client = new WebClient();
             _Client.Headers.Add("Origin", "https://embed.spotify.com");
             _Client.Headers.Add("Referer", "https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
+            _Client.Encoding = Encoding.UTF8;
             if (_Client.Proxy != null)
                 _Client.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 
@@ -106,15 +109,15 @@ namespace Winfy.Core.SpotifyLocal {
         /// <param name="uri">The Spotify album URI</param>
         public string GetArt(string uri) {
             try {
-                var albumId = uri.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries).Last();
+                var albumId = uri.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries).Last();
                 var lines = _Client.DownloadString(string.Format("http://open.spotify.com/album/{0}", albumId))
                                    .Replace("\t", string.Empty)
-                                   .Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                                   .Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
 
 
                 var coverId = (from line in lines
                                where line.StartsWith("<meta property=\"og:image\"")
-                               select line.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries))
+                               select line.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries))
                     .First() // item in resultset
                     .Last() // item in string array
                     .Replace("\"", "")
@@ -122,10 +125,14 @@ namespace Winfy.Core.SpotifyLocal {
 
                 return string.Format("http://o.scdn.co/{0}/{1}", CoverSize, coverId);
             }
+            catch (WebException webException) {
+                if (webException.Response != null && ((HttpWebResponse) webException.Response).StatusCode != HttpStatusCode.NotFound)
+                    _Log.WarnException("[WebException] Failed to retrieve cover url from Spotify", webException);
+            }
             catch(Exception exc) {
                 _Log.WarnException("Failed to retrieve cover url from Spotify", exc);
-                return string.Empty;
             }
+            return string.Empty;
         }
 
 
@@ -261,12 +268,13 @@ namespace Winfy.Core.SpotifyLocal {
                 response = _Client.DownloadString(requestUri);
                 response = "[ " + response + " ]";
             }
-            catch (Exception z) {
-                _Log.WarnException("SendLocalRequest failed", z);
+            catch (Exception wExc) {
+                _Log.WarnException("SendLocalRequest failed", wExc);
                 //perhaps spotifywebhelper isn't started (happens sometimes)
                 if (Process.GetProcessesByName("SpotifyWebHelper").Length < 1) {
                     try {
-                        Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Spotify\\Data\\SpotifyWebHelper.exe");
+                        Process.Start(
+                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "Data","SpotifyWebHelper.exe"));
                     }
                     catch (Exception exc) {
                         _Log.WarnException("Failed to start the Spotify webhelper", exc);
@@ -276,7 +284,7 @@ namespace Winfy.Core.SpotifyLocal {
                     return SendLocalRequest(request, oauth, cfid);
                 }
                 //spotifywebhelper is running but we still can't connect, wtf?!
-                throw new Exception("Unable to connect to SpotifyWebHelper", z);
+                throw new Exception("Unable to connect to SpotifyWebHelper", wExc);
             }
             return response;
         }
