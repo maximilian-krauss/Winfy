@@ -201,7 +201,17 @@ namespace Winfy.Core.SpotifyLocal {
                 try {
                     var a = SendLocalRequest("remote/status.json", true, true, _Wait);
                     var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
-                    return d.FirstOrDefault();
+
+                    var result = d.FirstOrDefault();
+                    if (result != null && result.Error != null && result.Error.Message.Contains("Invalid Csrf token")) {
+                        RenewToken();
+
+                        a = SendLocalRequest("remote/status.json", true, true, _Wait);
+                        d = (List<Status>)JsonConvert.DeserializeObject(a, typeof(List<Status>));
+                        result = d.FirstOrDefault();
+                    }
+
+                    return result;
                 }
                 catch (Exception exc) {
                     _Log.WarnException("Failed to get track status", exc);

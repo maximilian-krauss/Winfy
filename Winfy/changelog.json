@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.0.0.1",
+		"description": "the release after tommorow",
+		"changes": [
+			"Fixed: Local API might fail when Winfy and Spotify starts with Windows"
+		]
+	},
+	{
 		"version": "2.0.0.0",
 		"description": "yay 2.0",
 		"changes": [
