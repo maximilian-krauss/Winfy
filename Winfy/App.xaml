@@ -9,6 +9,10 @@
                 <ResourceDictionary>
                     <local:AppBootstrapper x:Key="bootstrapper" />
                     <c:VisibilityConverter x:Key="VisibilityConverter" />
+                    
+                    <Style TargetType="{x:Type Window}">
+                        <Setter Property="TextOptions.TextFormattingMode" Value="Display"></Setter>
+                    </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
