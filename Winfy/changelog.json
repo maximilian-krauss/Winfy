@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.0.0.2",
+		"description": "smoooth operator",
+		"changes": [
+			"Improved: Better text rendering (everything is smoother now)",
+			"Fixed: Local API might stop working if you leave Winfy alone for a while"
+		]
+	},
+	{
 		"version": "2.0.0.1",
 		"description": "the release after tommorow",
 		"changes": [

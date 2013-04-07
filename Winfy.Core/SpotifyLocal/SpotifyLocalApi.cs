@@ -203,11 +203,13 @@ namespace Winfy.Core.SpotifyLocal {
                     var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
 
                     var result = d.FirstOrDefault();
-                    if (result != null && result.Error != null && result.Error.Message.Contains("Invalid Csrf token")) {
+                    if (result != null && result.Error != null &&
+                        (result.Error.Message.Contains("Invalid Csrf token") ||
+                         result.Error.Message.Contains("Expired OAuth token"))) {
                         RenewToken();
 
                         a = SendLocalRequest("remote/status.json", true, true, _Wait);
-                        d = (List<Status>)JsonConvert.DeserializeObject(a, typeof(List<Status>));
+                        d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
                         result = d.FirstOrDefault();
                     }
 
