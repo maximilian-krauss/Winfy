@@ -12,10 +12,12 @@ namespace Winfy.Core {
         public Version ApplicationVersion {
             get {
                 try {
-                    return ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                    return ApplicationDeployment.IsNetworkDeployed
+                               ? ApplicationDeployment.CurrentDeployment.CurrentVersion
+                               : Assembly.GetEntryAssembly().GetName().Version;
                 }
                 catch {
-                    return Assembly.GetExecutingAssembly().GetName().Version;
+                    return Assembly.GetEntryAssembly().GetName().Version;
                 }
             }
         }

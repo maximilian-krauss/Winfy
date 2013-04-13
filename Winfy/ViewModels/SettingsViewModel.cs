@@ -37,6 +37,11 @@ namespace Winfy.ViewModels {
             set { _Settings.HideIfSpotifyClosed = value; NotifyOfPropertyChange(() => HideIfSpotifyClosed); }
         }
 
+        public bool DisableAnimations {
+            get { return _Settings.DisableAnimations; }
+            set { _Settings.DisableAnimations = value; NotifyOfPropertyChange(() => DisableAnimations); }
+        }
+
         private bool _CanClearCache = true;
         public bool CanClearCache {
             get { return _CanClearCache; }

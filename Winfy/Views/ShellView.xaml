@@ -4,10 +4,37 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+             xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+             xmlns:wi="clr-namespace:Winfy.Interactivity"
              mc:Ignorable="d" 
              MinHeight="174" MinWidth="174" MaxWidth="174" Padding="0"
              Background="#000000" FontFamily="Segoe UI"
              Foreground="#FFFFFF" BorderBrush="#000000">
+    <UserControl.Resources>
+        <Storyboard x:Key="stbFadeout">
+            <DoubleAnimation AutoReverse="False"
+                             From="1" To="0.0"
+                             Storyboard.TargetName="CoverDisplay"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0:01"/>
+        </Storyboard>
+        <Storyboard x:Key="stbFadein">
+            <DoubleAnimation AutoReverse="False"
+                             From="0.0" To="1"
+                             Storyboard.TargetName="CoverDisplay"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:0:01"/>
+        </Storyboard>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <wi:DataEventTrigger EventName="CoverDisplayFadeOut">
+            <im:ControlStoryboardAction Storyboard="{StaticResource stbFadeout}" ControlStoryboardOption="Play" />
+        </wi:DataEventTrigger>
+        <wi:DataEventTrigger EventName="CoverDisplayFadeIn">
+            <im:ControlStoryboardAction Storyboard="{StaticResource stbFadein}" ControlStoryboardOption="Play" />
+        </wi:DataEventTrigger>
+    </i:Interaction.Triggers>
     <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
         <Border.ContextMenu>
             <ContextMenu>
@@ -31,11 +58,13 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             
-            <Border Grid.Row="0" BorderBrush="{x:Null}" BorderThickness="0" Padding="0">
-                <Border.Background>
-                    <ImageBrush ImageSource="{Binding CoverImage}"/>
-                </Border.Background>
-                <Image Source="/Images/cover.png" Stretch="None"   />
+            <Border Grid.Row="0" Background="#000000">
+                <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding CoverImage}"/>
+                    </Border.Background>
+                    <Image Source="/Images/cover.png" Stretch="None"   />
+                </Border>
             </Border>
             
             <StackPanel Grid.Row="1" Margin="5" Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}">

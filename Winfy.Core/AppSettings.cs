@@ -28,6 +28,12 @@ namespace Winfy.Core {
             set { _HideIfSpotifyClosed = value; NotifyOfPropertyChange(() => HideIfSpotifyClosed); }
         }
 
+        private bool _DisableAnimations;
+        public bool DisableAnimations {
+            get { return _DisableAnimations; }
+            set { _DisableAnimations = value; NotifyOfPropertyChange(() => DisableAnimations); }
+        }
+
         public List<WindowPosition> Positions { get; set; }
         public string UniqueApplicationIdentifier { get; set; }
 

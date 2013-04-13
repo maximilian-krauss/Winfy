@@ -55,7 +55,7 @@ namespace Winfy {
             window.ResizeMode = ResizeMode.NoResize;
             window.ShowInTaskbar = false;
             window.SourceInitialized += (o, e) => {
-                                            if (!Helper.IsDWMSupported)
+                                            if (!Helper.IsWindows7)
                                                 return;
                                             var helper = new WindowInteropHelper(window);
                                             var val = 2;

@@ -23,7 +23,9 @@ namespace Winfy.ViewModels {
         private const string UnknownCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoUnknown.png";
 
         public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
-
+        public event EventHandler CoverDisplayFadeOut;
+        public event EventHandler CoverDisplayFadeIn;
+        
         public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Core.ILog logger, IUpdateService updateService, IUsageTrackerService usageTrackerService) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
@@ -148,6 +150,7 @@ namespace Winfy.ViewModels {
 
         private void UpdateView() {
             try {
+                OnCoverDisplayFadeOut();
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
 
@@ -160,17 +163,22 @@ namespace Winfy.ViewModels {
                 CanPlayNext = _SpotifyController.IsSpotifyOpen();
 
                 if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
-                    CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
+                    if(_Settings.DisableAnimations)
+                        CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
+
                     var updateCoverAction = new Action(() => {
                                                            var coverUri = _CoverService.FetchCover(artist, track);
                                                            if (string.IsNullOrEmpty(coverUri))
                                                                coverUri = UnknownCoverUri;
                                                            CoverImage = coverUri;
+                                                           OnCoverDisplayFadeIn();
                                                        });
                     updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
                 }
-                else
+                else {
                     CoverImage = NoCoverUri;
+                    OnCoverDisplayFadeIn();
+                }
             }
             catch (Exception exc) {
                 _Logger.FatalException("UpdateView() failed hard", exc);
@@ -204,6 +212,25 @@ namespace Winfy.ViewModels {
             Execute.OnUIThread(() => {
                                    var handler = ToggleVisibility;
                                    if (handler != null) handler(this, e);
+                               });
+        }
+        private void OnCoverDisplayFadeOut() {
+            Execute.OnUIThread(() => {
+                                   if (_Settings.DisableAnimations)
+                                       return;
+
+                                   var handler = CoverDisplayFadeOut;
+                                   if (handler != null) handler(this, EventArgs.Empty);
+                               });
+        }
+
+        private void OnCoverDisplayFadeIn() {
+            Execute.OnUIThread(() => {
+                                   if (_Settings.DisableAnimations)
+                                       return;
+
+                                   var handler = CoverDisplayFadeIn;
+                                   if (handler != null) handler(this, EventArgs.Empty);
                                });
         }
     }

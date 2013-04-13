@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.0.0.3",
+		"description": "animations ftw.",
+		"changes" : [
+			"New: Fancy cover fadein/fadeout when the track changes",
+			"Hint: You can disable the animations in Winfys settings"
+		]
+	},
+	{
 		"version": "2.0.0.2",
 		"description": "smoooth operator",
 		"changes": [
