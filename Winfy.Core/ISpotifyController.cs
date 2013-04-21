@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Winfy.Core.SpotifyLocal;
 
 namespace Winfy.Core {
     public interface ISpotifyController : IDisposable {
@@ -12,6 +13,7 @@ namespace Winfy.Core {
         bool IsSpotifyInstalled();
         string GetSongName();
         string GetArtistName();
+        Status GetStatus();
         void PausePlay();
         void NextTrack();
         void PreviousTrack();

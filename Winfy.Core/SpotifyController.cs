@@ -225,6 +225,10 @@ namespace Winfy.Core {
             return title.Count() > 1 ? title[0].Split('-')[1].Trim() : string.Empty;
         }
 
+        public Status GetStatus() {
+            return _CurrentTrackInfo;
+        }
+
         public void PausePlay() {
             PostMessage(_SpotifyProcess.MainWindowHandle, KeyMessage, IntPtr.Zero, new IntPtr(PlaypauseKey));
         }
