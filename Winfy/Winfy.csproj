@@ -112,6 +112,7 @@
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
     <Compile Include="Converter\VisibilityConverter.cs" />
+    <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Interactivity\BindingListener.cs" />
     <Compile Include="Interactivity\DataEventTrigger.cs" />
     <Compile Include="IToggleVisibility.cs" />
@@ -153,6 +154,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Resource Include="Images\LogoUnknown.png" />
+    <Resource Include="Images\Player\next-normal.png" />
+    <Resource Include="Images\Player\next-pressed.png" />
+    <Resource Include="Images\Player\play-pause-normal.png" />
+    <Resource Include="Images\Player\play-pause-pressed.png" />
+    <Resource Include="Images\Player\prev-normal.png" />
+    <Resource Include="Images\Player\prev-pressed.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

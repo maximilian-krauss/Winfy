@@ -7,32 +7,56 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
              xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
              xmlns:wi="clr-namespace:Winfy.Interactivity"
+             xmlns:ctrl="clr-namespace:Winfy.Controls"
              mc:Ignorable="d" 
              MinHeight="174" MinWidth="174" MaxWidth="174" Padding="0"
              Background="#000000" FontFamily="Segoe UI"
              Foreground="#FFFFFF" BorderBrush="#000000">
     <UserControl.Resources>
-        <Storyboard x:Key="stbFadeout">
+        <Storyboard x:Key="StbFadeout">
             <DoubleAnimation AutoReverse="False"
                              From="1" To="0.0"
                              Storyboard.TargetName="CoverDisplay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0:01"/>
         </Storyboard>
-        <Storyboard x:Key="stbFadein">
+        <Storyboard x:Key="StbFadein">
             <DoubleAnimation AutoReverse="False"
                              From="0.0" To="1"
                              Storyboard.TargetName="CoverDisplay"
                              Storyboard.TargetProperty="Opacity"
                              Duration="0:0:0:01"/>
         </Storyboard>
+        <Storyboard x:Key="StbFadeoutPlayer">
+            <DoubleAnimation AutoReverse="False"
+                             To="0.0"
+                             Storyboard.TargetName="PlayerButtons"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:.5"/>
+        </Storyboard>
+        <Storyboard x:Key="StbFadeinPlayer">
+            <DoubleAnimation AutoReverse="False"
+                             From="0.0" To="1"
+                             Storyboard.TargetName="PlayerButtons"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="0:0:.5"/>
+        </Storyboard>
+        
     </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="UserControl.MouseEnter">
+            <BeginStoryboard Storyboard="{StaticResource StbFadeinPlayer}" />
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UserControl.MouseLeave">
+            <BeginStoryboard Storyboard="{StaticResource StbFadeoutPlayer}" />
+        </EventTrigger>
+    </UserControl.Triggers>
     <i:Interaction.Triggers>
         <wi:DataEventTrigger EventName="CoverDisplayFadeOut">
-            <im:ControlStoryboardAction Storyboard="{StaticResource stbFadeout}" ControlStoryboardOption="Play" />
+            <im:ControlStoryboardAction Storyboard="{StaticResource StbFadeout}" ControlStoryboardOption="Play" />
         </wi:DataEventTrigger>
         <wi:DataEventTrigger EventName="CoverDisplayFadeIn">
-            <im:ControlStoryboardAction Storyboard="{StaticResource stbFadein}" ControlStoryboardOption="Play" />
+            <im:ControlStoryboardAction Storyboard="{StaticResource StbFadein}" ControlStoryboardOption="Play" />
         </wi:DataEventTrigger>
     </i:Interaction.Triggers>
     <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
@@ -63,7 +87,34 @@
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding CoverImage}"/>
                     </Border.Background>
-                    <Image Source="/Images/cover.png" Stretch="None"   />
+                    <Border>
+                        <Border.Background><ImageBrush ImageSource="/Images/cover.png"></ImageBrush></Border.Background>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                               <RowDefinition Height="*" /> 
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Name="PlayerButtons" Opacity="0">
+                                <ctrl:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
+                                                  ImageSourceNormal="/Images/Player/prev-normal.png"
+                                                  ImageSource="/Images/Player/prev-normal.png"
+                                                  ImageSourcePressed="/Images/Player/prev-pressed.png"/>
+                                <ctrl:ImageButton Width="33" Height="33" x:Name="PlayPause"
+                                                  ImageSourceNormal="/Images/Player/play-pause-normal.png"
+                                                  ImageSource="/Images/Player/play-pause-normal.png"
+                                                  ImageSourcePressed="/Images/Player/play-pause-pressed.png"/>
+                                <ctrl:ImageButton Width="24" Height="25" x:Name="PlayNext"
+                                                  ImageSourceNormal="/Images/Player/next-normal.png"
+                                                  ImageSource="/Images/Player/next-normal.png"
+                                                  ImageSourcePressed="/Images/Player/next-pressed.png"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </Border>
             </Border>
             

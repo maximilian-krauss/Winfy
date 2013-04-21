@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.0.0.4",
+		"description": "buttons!",
+		"changes": [
+			"New: Hover over cover to view the brand new playerbuttons :)"
+		]
+	},
+	{
 		"version": "2.0.0.3",
 		"description": "animations ftw.",
 		"changes" : [
