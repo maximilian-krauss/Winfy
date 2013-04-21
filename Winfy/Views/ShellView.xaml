@@ -103,15 +103,18 @@
                                 <ctrl:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
                                                   ImageSourceNormal="/Images/Player/prev-normal.png"
                                                   ImageSource="/Images/Player/prev-normal.png"
-                                                  ImageSourcePressed="/Images/Player/prev-pressed.png"/>
+                                                  ImageSourcePressed="/Images/Player/prev-pressed.png"
+                                                  ToolTip="plays the previous track" />
                                 <ctrl:ImageButton Width="33" Height="33" x:Name="PlayPause"
                                                   ImageSourceNormal="/Images/Player/play-pause-normal.png"
                                                   ImageSource="/Images/Player/play-pause-normal.png"
-                                                  ImageSourcePressed="/Images/Player/play-pause-pressed.png"/>
+                                                  ImageSourcePressed="/Images/Player/play-pause-pressed.png"
+                                                  ToolTip="play/pause"/>
                                 <ctrl:ImageButton Width="24" Height="25" x:Name="PlayNext"
                                                   ImageSourceNormal="/Images/Player/next-normal.png"
                                                   ImageSource="/Images/Player/next-normal.png"
-                                                  ImageSourcePressed="/Images/Player/next-pressed.png"/>
+                                                  ImageSourcePressed="/Images/Player/next-pressed.png"
+                                                  ToolTip="plays the next track" />
                             </StackPanel>
                         </Grid>
                     </Border>

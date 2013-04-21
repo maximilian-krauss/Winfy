@@ -36,6 +36,16 @@
                         </Setter>
                     </Style>
                     
+                    <Style TargetType="{x:Type ToolTip}">
+                        <Setter Property="Background" Value="#333333" />
+                        <Setter Property="BorderBrush" Value="#D5D4C7" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="Foreground" Value="#FFFFFF" />
+                        <Setter Property="Opacity" Value="0.85" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                    </Style>
+                    
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
