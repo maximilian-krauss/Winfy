@@ -150,9 +150,13 @@ namespace Winfy.ViewModels {
 
         private void UpdateView() {
             try {
-                OnCoverDisplayFadeOut();
+                var status = _SpotifyController.GetStatus();
                 var track = _SpotifyController.GetSongName();
                 var artist = _SpotifyController.GetArtistName();
+                var fade = (status != null && status.Playing);
+
+                if(fade)
+                    OnCoverDisplayFadeOut();
 
                 HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
                 CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
@@ -171,13 +175,15 @@ namespace Winfy.ViewModels {
                                                            if (string.IsNullOrEmpty(coverUri))
                                                                coverUri = UnknownCoverUri;
                                                            CoverImage = coverUri;
-                                                           OnCoverDisplayFadeIn();
+                                                           if (fade)
+                                                               OnCoverDisplayFadeIn();
                                                        });
                     updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
                 }
                 else {
                     CoverImage = NoCoverUri;
-                    OnCoverDisplayFadeIn();
+                    if(fade)
+                        OnCoverDisplayFadeIn();
                 }
             }
             catch (Exception exc) {

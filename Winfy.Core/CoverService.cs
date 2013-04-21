@@ -59,8 +59,9 @@ namespace Winfy.Core {
             try {
                 var trackStatus = _LocalApi.Status;
                 if (trackStatus != null) {
-                    if(trackStatus.Error != null)
-                        throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.Error.Message, trackStatus.Error.Type));
+                    if (trackStatus.Error != null)
+                        throw new Exception(string.Format("API Error: {0} (0x{1})", trackStatus.Error.Message,
+                                                          trackStatus.Error.Type));
 
                     if (trackStatus.Track != null && trackStatus.Track.AlbumResource != null) {
                         var coverUrl = _LocalApi.GetArt(trackStatus.Track.AlbumResource.Uri);
@@ -69,9 +70,12 @@ namespace Winfy.Core {
                     }
                 }
             }
+            catch (WebException webExc) {
+                if(webExc.Response != null && ((HttpWebResponse)webExc.Response).StatusCode != HttpStatusCode.NotFound)
+                    _Logger.WarnException(string.Format("Failed to retrieve Image via Spotify Local API: {0}", webExc.Message), webExc);
+            }
             catch (Exception exc) {
                 _Logger.WarnException("Failed to retrieve cover from Spotify", exc);
-                
             }
             return string.Empty;
         }
