@@ -65,7 +65,7 @@
                 <MenuItem Header="About Winfy..." cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
                 <MenuItem Header="Settings..." cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
                 <Separator/>
-                <MenuItem Header="Play/Pause" cal:Message.Attach="[Event Click] = [Action PlayPause]" />
+                <MenuItem Header="Toggle playback" cal:Message.Attach="[Event Click] = [Action PlayPause]" />
                 <MenuItem Header="Previous track" cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
                 <MenuItem Header="Next track" cal:Message.Attach="[Event Click] = [Action PlayNext]" />
                 <Separator/>
@@ -109,7 +109,7 @@
                                                   ImageSourceNormal="/Images/Player/play-pause-normal.png"
                                                   ImageSource="/Images/Player/play-pause-normal.png"
                                                   ImageSourcePressed="/Images/Player/play-pause-pressed.png"
-                                                  ToolTip="play/pause"/>
+                                                  ToolTip="Toggle playback"/>
                                 <ctrl:ImageButton Width="24" Height="25" x:Name="PlayNext"
                                                   ImageSourceNormal="/Images/Player/next-normal.png"
                                                   ImageSource="/Images/Player/next-normal.png"

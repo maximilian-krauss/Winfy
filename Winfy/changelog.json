@@ -1,5 +1,20 @@
 [
 	{
+		"version": "2.0.1.6",
+		"description": "phew, its working again",
+		"changes": [
+			"Fixed: Spotify Local API is working again"
+		]
+	},
+	{
+		"version": "2.0.1.5",
+		"description": "bugfix",
+		"changes": [
+			"Fixed: Corrupt settings file could crash whole app",
+			"Important: Looks like Spotify killed the Local-Api. I had to disable the interaction with the Spotify client which causes some lags in determining the current cover image."
+		]
+	},
+	{
 		"version": "2.0.1.4",
 		"description": "buttons!",
 		"changes": [

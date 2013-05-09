@@ -20,9 +20,14 @@ namespace Winfy.Core {
 
         public T Instance {
             get {
-                return _Instance ?? (_Instance = File.Exists(Path)
-                                                     ? Serializer.DeserializeFromJson<T>(Path)
-                                                     : Activator.CreateInstance<T>());
+                try {
+                    return _Instance ?? (_Instance = File.Exists(Path)
+                                                         ? Serializer.DeserializeFromJson<T>(Path)
+                                                         : Activator.CreateInstance<T>());
+                }
+                catch {
+                    return (_Instance = Activator.CreateInstance<T>());
+                }
             }
         }
 

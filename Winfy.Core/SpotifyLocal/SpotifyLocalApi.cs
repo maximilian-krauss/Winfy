@@ -71,7 +71,7 @@ namespace Winfy.Core.SpotifyLocal {
 
         /// <summary>Initializes a new SpotifyAPI object which can be used to recieve</summary>
         public SpotifyLocalApi(ILog log, AppContracts contracts, AppSettings settings) {
-            
+
             //emulate the embed code [NEEDED]
             _Client = new WebClient();
             _Client.Headers.Add("Origin", "https://embed.spotify.com");
