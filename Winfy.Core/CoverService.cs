@@ -53,6 +53,8 @@ namespace Winfy.Core {
         }
 
         private string FetchSpotifyCover(string cachedFileName) {
+            return string.Empty;
+
             if (!_LocalApi.HasValidToken)
                 return string.Empty;
 

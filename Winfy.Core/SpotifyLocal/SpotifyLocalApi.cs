@@ -71,7 +71,9 @@ namespace Winfy.Core.SpotifyLocal {
 
         /// <summary>Initializes a new SpotifyAPI object which can be used to recieve</summary>
         public SpotifyLocalApi(ILog log, AppContracts contracts, AppSettings settings) {
-            
+
+            return;
+
             //emulate the embed code [NEEDED]
             _Client = new WebClient();
             _Client.Headers.Add("Origin", "https://embed.spotify.com");
@@ -89,6 +91,8 @@ namespace Winfy.Core.SpotifyLocal {
 
         public void RenewToken() {
             try {
+                return;
+
                 //Reset fields
                 _OAuth = string.Empty;
                 _Cfid = string.Empty;
@@ -109,6 +113,8 @@ namespace Winfy.Core.SpotifyLocal {
         /// <param name="uri">The Spotify album URI</param>
         public string GetArt(string uri) {
             try {
+                return string.Empty;
+
                 var albumId = uri.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries).Last();
                 var lines = _Client.DownloadString(string.Format("http://open.spotify.com/album/{0}", albumId))
                                    .Replace("\t", string.Empty)
@@ -199,6 +205,8 @@ namespace Winfy.Core.SpotifyLocal {
         public Status Status {
             get {
                 try {
+                    return null;
+
                     var a = SendLocalRequest("remote/status.json", true, true, _Wait);
                     var d = (List<Status>) JsonConvert.DeserializeObject(a, typeof (List<Status>));
 

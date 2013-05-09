@@ -62,7 +62,7 @@ namespace Winfy {
                                             DwmSetWindowAttribute(helper.Handle, 2, ref val, 4);
                                             var m = new Margins { bottomHeight = -1, leftWidth = -1, rightWidth = -1, topHeight = -1 };
                                             DwmExtendFrameIntoClientArea(helper.Handle, ref m);
-                                            IntPtr hwnd = new WindowInteropHelper(window).Handle;
+                                            var hwnd = new WindowInteropHelper(window).Handle;
                                         };
             window.MouseLeftButtonDown += (o, e) => window.DragMove();
 
@@ -77,21 +77,27 @@ namespace Winfy {
             var wndId = rootViewModel.GetType().Name.ToSHA1();
 
             var savedPosition = _Settings.Positions.FirstOrDefault(p => p.WindowId == wndId);
-            if (savedPosition == null) {
-                wnd.WindowStartupLocation = wnd.Owner != null
-                                                ? WindowStartupLocation.CenterOwner
-                                                : WindowStartupLocation.CenterScreen;
-            }
-            else {
+            if (savedPosition != null) {
                 wnd.WindowStartupLocation = WindowStartupLocation.Manual;
                 wnd.Top = savedPosition.Top;
                 wnd.Left = savedPosition.Left;
             }
+            else
+                wnd.WindowStartupLocation = wnd.Owner != null
+                                                ? WindowStartupLocation.CenterOwner
+                                                : WindowStartupLocation.CenterScreen;
 
             if (savedPosition == null) {
                 savedPosition = new WindowPosition {WindowId = wndId};
                 _Settings.Positions.Add(savedPosition);
             }
+
+            //Track the location of the Shell any time its changed
+            if (rootViewModel is ShellViewModel)
+                wnd.LocationChanged += (o, e) => {
+                                           savedPosition.Top = ((Window) o).Top;
+                                           savedPosition.Left = ((Window) o).Left;
+                                       };
 
             wnd.Closing += (o, e) => {
                                savedPosition.Top = ((Window) o).Top;
