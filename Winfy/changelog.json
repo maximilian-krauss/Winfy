@@ -1,5 +1,12 @@
 [
 	{
+		"version": "2.0.1.6",
+		"description": "phew, its working again",
+		"changes": [
+			"Fixed: Spotify Local API is working again"
+		]
+	},
+	{
 		"version": "2.0.1.5",
 		"description": "bugfix",
 		"changes": [

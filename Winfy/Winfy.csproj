@@ -29,7 +29,7 @@
     <InstallUrl>http://deploy.krausshq.com/winfy/</InstallUrl>
     <UpdateUrl>http://deploy.krausshq.com/winfy/</UpdateUrl>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>2.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
