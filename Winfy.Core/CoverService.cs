@@ -29,7 +29,7 @@ namespace Winfy.Core {
         public double CacheSize() {
             return !Directory.Exists(_CacheDirectory)
                        ? 0.0
-                       : Directory.GetFiles(_CacheDirectory, "*.jpg").Sum(f => new FileInfo(f).Length);
+                       : Directory.GetFiles(_CacheDirectory, "*").Sum(f => new FileInfo(f).Length);
         }
 
         public void ClearCache() {
