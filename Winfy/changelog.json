@@ -1,5 +1,14 @@
 [
 	{
+		"version": "2.0.1.7",
+		"description": "Mom, am I famous now?",
+		"changes": [
+			"Fixed: A friendly Hi! to every new and old Winfy user :)",
+			"Fixed: Cachesize wasn't calculated correctly",
+			"Improved: Center screen position for updatewindow"
+		]
+	},
+	{
 		"version": "2.0.1.6",
 		"description": "phew, its working again",
 		"changes": [

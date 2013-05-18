@@ -76,6 +76,12 @@ namespace Winfy {
         private void TrackLocation(Window wnd, object rootViewModel) {
             var wndId = rootViewModel.GetType().Name.ToSHA1();
 
+            var hasFixedPosition = (rootViewModel as IFixedPosition);
+            if (hasFixedPosition != null) {
+                wnd.WindowStartupLocation = hasFixedPosition.WindowStartupLocation;
+                return;
+            }
+
             var savedPosition = _Settings.Positions.FirstOrDefault(p => p.WindowId == wndId);
             if (savedPosition != null) {
                 wnd.WindowStartupLocation = WindowStartupLocation.Manual;

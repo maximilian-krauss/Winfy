@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using System.Windows;
+using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using Winfy.Core;
 using Winfy.Core.Deployment;
 
 namespace Winfy.ViewModels {
-    public sealed class UpdateReadyViewModel : Screen {
+    public sealed class UpdateReadyViewModel : Screen, IFixedPosition {
         private readonly IUpdateService _UpdateController;
         private readonly AppContracts _Contracts;
 
@@ -35,5 +36,6 @@ namespace Winfy.ViewModels {
             _UpdateController.Restart();
         }
 
+        public WindowStartupLocation WindowStartupLocation { get { return WindowStartupLocation.CenterScreen; } }
     }
 }

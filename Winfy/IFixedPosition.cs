@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows;
 
 namespace Winfy {
-    class IFixedPosition {
+    public interface IFixedPosition {
+        WindowStartupLocation WindowStartupLocation { get; }
     }
 }
