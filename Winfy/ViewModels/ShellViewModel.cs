@@ -50,11 +50,8 @@ namespace Winfy.ViewModels {
         protected override void OnViewLoaded(object view) {
             base.OnViewLoaded(view);
 
-            if (!_SpotifyController.IsSpotifyInstalled()) {
+            if (!_SpotifyController.IsSpotifyInstalled())
                 _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
-                TryClose();
-                return;
-            }
 
             if(_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
                 OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
