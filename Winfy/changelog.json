@@ -1,5 +1,14 @@
 [
 	{
+		"version": "2.0.1.9",
+		"description": "sign all the codes",
+		"changes": [
+			"Fixed: Executable is now code signed. This hopefully stops Microsofts SmartScreen filter from blocking Winfy",
+			"Fixed: Better Spotify detection (I hope...)",
+			"Improved: Even Winfy didn't detect a Spotify installation, it't wont close itself"
+		]
+	},
+	{
 		"version": "2.0.1.7",
 		"description": "Mom, am I famous now?",
 		"changes": [

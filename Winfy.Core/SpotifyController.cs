@@ -200,12 +200,23 @@ namespace Winfy.Core {
 
         public bool IsSpotifyInstalled() {
             try {
+                //first try: the installation directory
+                var spotifyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                                               "Spotify", "spotify.exe");
+                if (File.Exists(spotifyPath))
+                    return true;
+
+                //second try: look into the registry
                 var registryKey = Registry.CurrentUser.OpenSubKey(SpotifyRegistryKey, false);
-                return registryKey != null && File.Exists((string) registryKey.GetValue("DisplayIcon", string.Empty));
+                if (registryKey != null && File.Exists((string) registryKey.GetValue("DisplayIcon", string.Empty)))
+                    return true; //looks good, return true
+
+                return false;
             }
             catch (Exception exc) {
                 _Logger.WarnException("Failed to detect if Spotify is installed or not :(", exc);
-                return false;
+                //In case of an error it's better to return true instead of false, because this makes Winfy unusable if there is something wrong with Windows.
+                return true;
             }
         }
 

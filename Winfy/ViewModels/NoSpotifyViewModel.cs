@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using System.Windows;
+using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using Winfy.Core;
 
 namespace Winfy.ViewModels {
-    public sealed class NoSpotifyViewModel : Screen {
+    public sealed class NoSpotifyViewModel : Screen, IFixedPosition {
         private readonly AppContracts _Contracts;
 
         public NoSpotifyViewModel(AppContracts contracts) {
@@ -20,6 +21,10 @@ namespace Winfy.ViewModels {
 
         public void GoToSpotify() {
             Helper.OpenUrl(_Contracts.SpotifyUrl);
+        }
+
+        public WindowStartupLocation WindowStartupLocation {
+            get { return WindowStartupLocation.CenterScreen; }
         }
     }
 }
