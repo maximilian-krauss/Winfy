@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Deployment.Application;
 using Caliburn.Micro.TinyIOC;
 using Winfy.Core;
+using Winfy.Core.Broadcast;
 using Winfy.ViewModels;
 using Caliburn.Micro;
 using System.IO;
@@ -39,6 +40,7 @@ namespace Winfy {
             Container.Register<Core.ILog>(new ProductionLogger());
             Container.Register<AutorunService>(new AutorunService(Container.Resolve<Core.ILog>(), _Settings, _Contracts));
             Container.Register<IWindowManager>(new AppWindowManager(_Settings));
+            Container.Register<IBroadcastService>(new BroadcastService(_Settings, _Contracts, Container.Resolve<Core.ILog>()));
 
             Container.Register<SpotifyLocalApi>(new SpotifyLocalApi(Container.Resolve<Core.ILog>(), _Contracts, _Settings));
             Container.Register<ISpotifyController>(new SpotifyController(Container.Resolve<Core.ILog>(), Container.Resolve<SpotifyLocalApi>()));

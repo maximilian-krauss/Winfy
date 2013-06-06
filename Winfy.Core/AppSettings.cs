@@ -7,6 +7,7 @@ namespace Winfy.Core {
 
         public AppSettings() {
             Positions = new List<WindowPosition>();
+            ReadBroadcastMessageIds = new List<string>();
             UniqueApplicationIdentifier = Guid.NewGuid().ToString();
         }
 
@@ -35,6 +36,7 @@ namespace Winfy.Core {
         }
 
         public List<WindowPosition> Positions { get; set; }
+        public List<string> ReadBroadcastMessageIds { get; set; }
         public string UniqueApplicationIdentifier { get; set; }
 
     }

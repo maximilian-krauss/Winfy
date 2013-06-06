@@ -1,11 +1,19 @@
 [
 	{
+		"version": "2.0.1.10",
+		"description": "broadcasting",
+		"changes": [
+			"New: Added a broadcasting system for important update/upgrade notifications. (I won't bug you, promise! :) )",
+			"Improved: Small performance fixes"
+		]
+	},
+	{
 		"version": "2.0.1.9",
 		"description": "sign all the codes",
 		"changes": [
 			"Fixed: Executable is now code signed. This hopefully stops Microsofts SmartScreen filter from blocking Winfy",
 			"Fixed: Better Spotify detection (I hope...)",
-			"Improved: Even Winfy didn't detect a Spotify installation, it't wont close itself"
+			"Improved: Even if Winfy didn't detect a Spotify installation, it won't close itself"
 		]
 	},
 	{

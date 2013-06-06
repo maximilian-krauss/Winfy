@@ -4,6 +4,7 @@ using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using Winfy.Core;
+using Winfy.Core.Broadcast;
 using Winfy.Core.Deployment;
 using Action = System.Action;
 using TinyIoC;
@@ -17,6 +18,7 @@ namespace Winfy.ViewModels {
         private readonly IEventAggregator _EventAggregator;
         private readonly IUpdateService _UpdateService;
         private readonly IUsageTrackerService _UsageTrackerService;
+        private readonly IBroadcastService _BroadcastService;
         private readonly AppSettings _Settings;
         private readonly Core.ILog _Logger;
         private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
@@ -26,7 +28,7 @@ namespace Winfy.ViewModels {
         public event EventHandler CoverDisplayFadeOut;
         public event EventHandler CoverDisplayFadeIn;
         
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Core.ILog logger, IUpdateService updateService, IUsageTrackerService usageTrackerService) {
+        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Core.ILog logger, IUpdateService updateService, IUsageTrackerService usageTrackerService, IBroadcastService broadcastService) {
             _WindowManager = windowManager;
             _SpotifyController = spotifyController;
             _CoverService = coverService;
@@ -35,6 +37,7 @@ namespace Winfy.ViewModels {
             _Logger = logger;
             _UpdateService = updateService;
             _UsageTrackerService = usageTrackerService;
+            _BroadcastService = broadcastService;
 
             CoverImage = NoCoverUri;
             UpdateView();
@@ -45,6 +48,9 @@ namespace Winfy.ViewModels {
             _UpdateService.UpdateReady += UpdateReady;
             _UpdateService.StartBackgroundCheck();
             _UsageTrackerService.Track();
+
+            _BroadcastService.BroadcastMessageReceived += BroadcastMessageReceived;
+            _BroadcastService.StartListening();
         }
 
         protected override void OnViewLoaded(object view) {
@@ -209,7 +215,12 @@ namespace Winfy.ViewModels {
                                                                                }))));
 
         }
-        
+
+        private void BroadcastMessageReceived(object sender, BroadcastMessageReceivedEventArgs e) {
+            Execute.OnUIThread(() => _WindowManager.ShowDialog(
+                TinyIoCContainer.Current.Resolve<NewBroadcastMessageViewModel>(
+                new NamedParameterOverloads(new Dictionary<string, object> {{"message", e.Message}}))));
+        }
 
         private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
             Execute.OnUIThread(() => {

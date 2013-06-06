@@ -1,0 +1,11 @@
+[
+	{
+		"id": "683988ba-78c1-42b8-a0e6-ec5ab4f2fac9",
+		"active": false,
+		"affected_version": "1.0.1.0",
+		"title": "Insert a title here",
+		"body": "insert a body here",
+		"action_name": "an name for the useraction",
+		"action_url": "url for action"
+	}
+]
