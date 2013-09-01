@@ -1,5 +1,13 @@
 [
 	{
+		"version": "2.0.2.0",
+		"description": "sizetastic",
+		"changes": [
+			"Info: No worries, project is still alive :)",
+			"New: There are now three main window sizes: large, medium, small"
+		]
+	},
+	{
 		"version": "2.0.1.10",
 		"description": "broadcasting",
 		"changes": [

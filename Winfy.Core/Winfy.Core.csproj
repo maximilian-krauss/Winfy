@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContracts.cs" />
+    <Compile Include="ApplicationSize.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="AutorunService.cs" />
     <Compile Include="Broadcast\BroadcastMessage.cs" />

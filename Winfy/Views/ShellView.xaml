@@ -1,132 +1,135 @@
 ﻿<UserControl x:Class="Winfy.Views.ShellView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
-             xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
-             xmlns:wi="clr-namespace:Winfy.Interactivity"
-             xmlns:ctrl="clr-namespace:Winfy.Controls"
-             mc:Ignorable="d" 
-             MinHeight="174" MinWidth="174" MaxWidth="174" Padding="0"
-             Background="#000000" FontFamily="Segoe UI"
-             Foreground="#FFFFFF" BorderBrush="#000000">
-    <UserControl.Resources>
-        <Storyboard x:Key="StbFadeout">
-            <DoubleAnimation AutoReverse="False"
-                             From="1" To="0.0"
-                             Storyboard.TargetName="CoverDisplay"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0:01"/>
-        </Storyboard>
-        <Storyboard x:Key="StbFadein">
-            <DoubleAnimation AutoReverse="False"
-                             From="0.0" To="1"
-                             Storyboard.TargetName="CoverDisplay"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:0:01"/>
-        </Storyboard>
-        <Storyboard x:Key="StbFadeoutPlayer">
-            <DoubleAnimation AutoReverse="False"
-                             To="0.0"
-                             Storyboard.TargetName="PlayerButtons"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.5"/>
-        </Storyboard>
-        <Storyboard x:Key="StbFadeinPlayer">
-            <DoubleAnimation AutoReverse="False"
-                             From="0.0" To="1"
-                             Storyboard.TargetName="PlayerButtons"
-                             Storyboard.TargetProperty="Opacity"
-                             Duration="0:0:.5"/>
-        </Storyboard>
-        
-    </UserControl.Resources>
-    <UserControl.Triggers>
-        <EventTrigger RoutedEvent="UserControl.MouseEnter">
-            <BeginStoryboard Storyboard="{StaticResource StbFadeinPlayer}" />
-        </EventTrigger>
-        <EventTrigger RoutedEvent="UserControl.MouseLeave">
-            <BeginStoryboard Storyboard="{StaticResource StbFadeoutPlayer}" />
-        </EventTrigger>
-    </UserControl.Triggers>
-    <i:Interaction.Triggers>
-        <wi:DataEventTrigger EventName="CoverDisplayFadeOut">
-            <im:ControlStoryboardAction Storyboard="{StaticResource StbFadeout}" ControlStoryboardOption="Play" />
-        </wi:DataEventTrigger>
-        <wi:DataEventTrigger EventName="CoverDisplayFadeIn">
-            <im:ControlStoryboardAction Storyboard="{StaticResource StbFadein}" ControlStoryboardOption="Play" />
-        </wi:DataEventTrigger>
-    </i:Interaction.Triggers>
-    <Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
-        <Border.ContextMenu>
-            <ContextMenu>
-                <MenuItem Header="About Winfy..." cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
-                <MenuItem Header="Settings..." cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
-                <Separator/>
-                <MenuItem Header="Toggle playback" cal:Message.Attach="[Event Click] = [Action PlayPause]" />
-                <MenuItem Header="Previous track" cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
-                <MenuItem Header="Next track" cal:Message.Attach="[Event Click] = [Action PlayNext]" />
-                <Separator/>
-                <MenuItem Header="Volume Up" cal:Message.Attach="[Event Click] = [Action VolumeUp]" />
-                <MenuItem Header="Volume Down" cal:Message.Attach="[Event Click] = [Action VolumeDown]" />
-                <Separator />
-                <MenuItem Header="Exit" cal:Message.Attach="[Event Click] = [Action TryClose]" />
-            </ContextMenu>
-        </Border.ContextMenu>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="174" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            
-            <Border Grid.Row="0" Background="#000000">
-                <Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{Binding CoverImage}"/>
-                    </Border.Background>
-                    <Border>
-                        <Border.Background><ImageBrush ImageSource="/Images/cover.png"></ImageBrush></Border.Background>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                               <RowDefinition Height="*" /> 
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Name="PlayerButtons" Opacity="0">
-                                <ctrl:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
-                                                  ImageSourceNormal="/Images/Player/prev-normal.png"
-                                                  ImageSource="/Images/Player/prev-normal.png"
-                                                  ImageSourcePressed="/Images/Player/prev-pressed.png"
-                                                  ToolTip="plays the previous track" />
-                                <ctrl:ImageButton Width="33" Height="33" x:Name="PlayPause"
-                                                  ImageSourceNormal="/Images/Player/play-pause-normal.png"
-                                                  ImageSource="/Images/Player/play-pause-normal.png"
-                                                  ImageSourcePressed="/Images/Player/play-pause-pressed.png"
-                                                  ToolTip="Toggle playback"/>
-                                <ctrl:ImageButton Width="24" Height="25" x:Name="PlayNext"
-                                                  ImageSourceNormal="/Images/Player/next-normal.png"
-                                                  ImageSource="/Images/Player/next-normal.png"
-                                                  ImageSourcePressed="/Images/Player/next-pressed.png"
-                                                  ToolTip="plays the next track" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Border>
-            </Border>
-            
-            <StackPanel Grid.Row="1" Margin="5" Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}">
-                <TextBlock Name="CurrentTrack" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
-                <TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" />
-            </StackPanel>
-            
-        </Grid>
-    </Border>
-    
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:cal="http://www.caliburnproject.org"
+			 xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+			 xmlns:im="clr-namespace:Microsoft.Expression.Interactivity.Media;assembly=Microsoft.Expression.Interactions"
+			 xmlns:wi="clr-namespace:Winfy.Interactivity"
+			 xmlns:ctrl="clr-namespace:Winfy.Controls"
+			 mc:Ignorable="d" 
+			 MinHeight="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+			 MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+			 MaxWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}"
+			 Padding="0"
+			 Background="#000000" FontFamily="Segoe UI"
+			 Foreground="#FFFFFF" BorderBrush="#000000">
+	<UserControl.Resources>
+		<Storyboard x:Key="StbFadeout">
+			<DoubleAnimation AutoReverse="False"
+							 From="1" To="0.0"
+							 Storyboard.TargetName="CoverDisplay"
+							 Storyboard.TargetProperty="Opacity"
+							 Duration="0:0:0:01"/>
+		</Storyboard>
+		<Storyboard x:Key="StbFadein">
+			<DoubleAnimation AutoReverse="False"
+							 From="0.0" To="1"
+							 Storyboard.TargetName="CoverDisplay"
+							 Storyboard.TargetProperty="Opacity"
+							 Duration="0:0:0:01"/>
+		</Storyboard>
+		<Storyboard x:Key="StbFadeoutPlayer">
+			<DoubleAnimation AutoReverse="False"
+							 To="0.0"
+							 Storyboard.TargetName="PlayerButtons"
+							 Storyboard.TargetProperty="Opacity"
+							 Duration="0:0:.5"/>
+		</Storyboard>
+		<Storyboard x:Key="StbFadeinPlayer">
+			<DoubleAnimation AutoReverse="False"
+							 From="0.0" To="1"
+							 Storyboard.TargetName="PlayerButtons"
+							 Storyboard.TargetProperty="Opacity"
+							 Duration="0:0:.5"/>
+		</Storyboard>
+		
+	</UserControl.Resources>
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="UserControl.MouseEnter">
+			<BeginStoryboard Storyboard="{StaticResource StbFadeinPlayer}" />
+		</EventTrigger>
+		<EventTrigger RoutedEvent="UserControl.MouseLeave">
+			<BeginStoryboard Storyboard="{StaticResource StbFadeoutPlayer}" />
+		</EventTrigger>
+	</UserControl.Triggers>
+	<i:Interaction.Triggers>
+		<wi:DataEventTrigger EventName="CoverDisplayFadeOut">
+			<im:ControlStoryboardAction Storyboard="{StaticResource StbFadeout}" ControlStoryboardOption="Play" />
+		</wi:DataEventTrigger>
+		<wi:DataEventTrigger EventName="CoverDisplayFadeIn">
+			<im:ControlStoryboardAction Storyboard="{StaticResource StbFadein}" ControlStoryboardOption="Play" />
+		</wi:DataEventTrigger>
+	</i:Interaction.Triggers>
+	<Border BorderBrush="#000000" BorderThickness="0" Background="#000000">
+		<Border.ContextMenu>
+			<ContextMenu>
+				<MenuItem Header="About Winfy..." cal:Message.Attach="[Event Click] = [Action ShowAbout]" />
+				<MenuItem Header="Settings..." cal:Message.Attach="[Event Click] = [Action ShowSettings]" />
+				<Separator/>
+				<MenuItem Header="Toggle playback" cal:Message.Attach="[Event Click] = [Action PlayPause]" />
+				<MenuItem Header="Previous track" cal:Message.Attach="[Event Click] = [Action PlayPrevious]" />
+				<MenuItem Header="Next track" cal:Message.Attach="[Event Click] = [Action PlayNext]" />
+				<Separator/>
+				<MenuItem Header="Volume Up" cal:Message.Attach="[Event Click] = [Action VolumeUp]" />
+				<MenuItem Header="Volume Down" cal:Message.Attach="[Event Click] = [Action VolumeDown]" />
+				<Separator />
+				<MenuItem Header="Exit" cal:Message.Attach="[Event Click] = [Action TryClose]" />
+			</ContextMenu>
+		</Border.ContextMenu>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			
+			<Border Grid.Row="0" Background="#000000">
+				<Border BorderBrush="{x:Null}" BorderThickness="0" Padding="0" Name="CoverDisplay" MinWidth="{Binding ApplicationSize, Converter={StaticResource ApplicationSizeConverter}}">
+					<Border.Background>
+						<ImageBrush ImageSource="{Binding CoverImage}"/>
+					</Border.Background>
+					<Border>
+						<Border.Background><ImageBrush ImageSource="/Images/cover.png"></ImageBrush></Border.Background>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+							   <RowDefinition Height="*" /> 
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Name="PlayerButtons" Opacity="0">
+								<ctrl:ImageButton Width="24" Height="25" x:Name="PlayPrevious"
+												  ImageSourceNormal="/Images/Player/prev-normal.png"
+												  ImageSource="/Images/Player/prev-normal.png"
+												  ImageSourcePressed="/Images/Player/prev-pressed.png"
+												  ToolTip="plays the previous track" />
+								<ctrl:ImageButton Width="33" Height="33" x:Name="PlayPause"
+												  ImageSourceNormal="/Images/Player/play-pause-normal.png"
+												  ImageSource="/Images/Player/play-pause-normal.png"
+												  ImageSourcePressed="/Images/Player/play-pause-pressed.png"
+												  ToolTip="Toggle playback"/>
+								<ctrl:ImageButton Width="24" Height="25" x:Name="PlayNext"
+												  ImageSourceNormal="/Images/Player/next-normal.png"
+												  ImageSource="/Images/Player/next-normal.png"
+												  ImageSourcePressed="/Images/Player/next-pressed.png"
+												  ToolTip="plays the next track" />
+							</StackPanel>
+						</Grid>
+					</Border>
+				</Border>
+			</Border>
+			
+			<StackPanel Grid.Row="1" Margin="5" Visibility="{Binding HasTrackInformation, Converter={StaticResource VisibilityConverter}}">
+				<TextBlock Name="CurrentTrack" FontSize="16" FontWeight="Light" TextWrapping="WrapWithOverflow" />
+				<TextBlock Name="CurrentArtist" TextWrapping="WrapWithOverflow" FontSize="12" />
+			</StackPanel>
+			
+		</Grid>
+	</Border>
+	
 </UserControl>

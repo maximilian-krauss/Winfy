@@ -11,241 +11,253 @@ using TinyIoC;
 using NLog;
 
 namespace Winfy.ViewModels {
-    public sealed class ShellViewModel : Screen, IToggleVisibility {
-        private readonly IWindowManager _WindowManager;
-        private readonly ISpotifyController _SpotifyController;
-        private readonly ICoverService _CoverService;
-        private readonly IEventAggregator _EventAggregator;
-        private readonly IUpdateService _UpdateService;
-        private readonly IUsageTrackerService _UsageTrackerService;
-        private readonly IBroadcastService _BroadcastService;
-        private readonly AppSettings _Settings;
-        private readonly Core.ILog _Logger;
-        private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
-        private const string UnknownCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoUnknown.png";
+	public sealed class ShellViewModel : Screen, IToggleVisibility {
+		private readonly IWindowManager _WindowManager;
+		private readonly ISpotifyController _SpotifyController;
+		private readonly ICoverService _CoverService;
+		private readonly IEventAggregator _EventAggregator;
+		private readonly IUpdateService _UpdateService;
+		private readonly IUsageTrackerService _UsageTrackerService;
+		private readonly IBroadcastService _BroadcastService;
+		private readonly AppSettings _Settings;
+		private readonly Core.ILog _Logger;
+		private const string NoCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoWhite.png";
+		private const string UnknownCoverUri = @"pack://application:,,,/Winfy;component/Images/LogoUnknown.png";
 
-        public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
-        public event EventHandler CoverDisplayFadeOut;
-        public event EventHandler CoverDisplayFadeIn;
-        
-        public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Core.ILog logger, IUpdateService updateService, IUsageTrackerService usageTrackerService, IBroadcastService broadcastService) {
-            _WindowManager = windowManager;
-            _SpotifyController = spotifyController;
-            _CoverService = coverService;
-            _EventAggregator = eventAggregator;
-            _Settings = settings;
-            _Logger = logger;
-            _UpdateService = updateService;
-            _UsageTrackerService = usageTrackerService;
-            _BroadcastService = broadcastService;
+		public event EventHandler<ToggleVisibilityEventArgs> ToggleVisibility;
+		public event EventHandler CoverDisplayFadeOut;
+		public event EventHandler CoverDisplayFadeIn;
+		
+		public ShellViewModel(IWindowManager windowManager, ISpotifyController spotifyController, ICoverService coverService, IEventAggregator eventAggregator, AppSettings settings, Core.ILog logger, IUpdateService updateService, IUsageTrackerService usageTrackerService, IBroadcastService broadcastService) {
+			_WindowManager = windowManager;
+			_SpotifyController = spotifyController;
+			_CoverService = coverService;
+			_EventAggregator = eventAggregator;
+			_Settings = settings;
+			_Logger = logger;
+			_UpdateService = updateService;
+			_UsageTrackerService = usageTrackerService;
+			_BroadcastService = broadcastService;
+			_ApplicationSize = _Settings.ApplicationSize;
 
-            CoverImage = NoCoverUri;
-            UpdateView();
+			CoverImage = NoCoverUri;
+			UpdateView();
 
-            _SpotifyController.TrackChanged += (o, e) => UpdateView();
-            _SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
-            _SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
-            _UpdateService.UpdateReady += UpdateReady;
-            _UpdateService.StartBackgroundCheck();
-            _UsageTrackerService.Track();
+			_SpotifyController.TrackChanged += (o, e) => UpdateView();
+			_SpotifyController.SpotifyOpened += (o, e) => SpotifyOpened();
+			_SpotifyController.SpotifyExited += (o, e) => SpotifyExited();
+			_UpdateService.UpdateReady += UpdateReady;
+			_UpdateService.StartBackgroundCheck();
+			_UsageTrackerService.Track();
 
-            _BroadcastService.BroadcastMessageReceived += BroadcastMessageReceived;
-            _BroadcastService.StartListening();
-        }
+			_BroadcastService.BroadcastMessageReceived += BroadcastMessageReceived;
+			_BroadcastService.StartListening();
 
-        protected override void OnViewLoaded(object view) {
-            base.OnViewLoaded(view);
+			_Settings.PropertyChanged += (o, e) => {
+				                             if (e.PropertyName == ApplicationSize.GetType().Name)
+					                             ApplicationSize = _Settings.ApplicationSize;
+			                             };
+		}
 
-            if (!_SpotifyController.IsSpotifyInstalled())
-                _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
+		protected override void OnViewLoaded(object view) {
+			base.OnViewLoaded(view);
 
-            if(_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
-                OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
-        }
+			if (!_SpotifyController.IsSpotifyInstalled())
+				_WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<NoSpotifyViewModel>());
 
-        #region Properties
+			if(_Settings.HideIfSpotifyClosed && !_SpotifyController.IsSpotifyOpen())
+				OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
+		}
 
-        private string _CurrentTrack;
-        public string CurrentTrack {
-            get { return _CurrentTrack; }
-            set { _CurrentTrack = value; NotifyOfPropertyChange(() => CurrentTrack); }
-        }
+		#region Properties
 
-        private string _CurrentArtist;
-        public string CurrentArtist {
-            get { return _CurrentArtist; }
-            set { _CurrentArtist = value; NotifyOfPropertyChange(() => CurrentArtist); }
-        }
+		private string _CurrentTrack;
+		public string CurrentTrack {
+			get { return _CurrentTrack; }
+			set { _CurrentTrack = value; NotifyOfPropertyChange(() => CurrentTrack); }
+		}
 
-        private string _CoverImage;
-        public string CoverImage {
-            get { return _CoverImage; }
-            set { _CoverImage = value; NotifyOfPropertyChange(() => CoverImage); }
-        }
+		private string _CurrentArtist;
+		public string CurrentArtist {
+			get { return _CurrentArtist; }
+			set { _CurrentArtist = value; NotifyOfPropertyChange(() => CurrentArtist); }
+		}
 
-        private bool _CanPlayPause;
-        public bool CanPlayPause {
-            get { return _CanPlayPause; }
-            set { _CanPlayPause = value; NotifyOfPropertyChange(() => CanPlayPause); }
-        }
+		private string _CoverImage;
+		public string CoverImage {
+			get { return _CoverImage; }
+			set { _CoverImage = value; NotifyOfPropertyChange(() => CoverImage); }
+		}
 
-        private bool _CanPlayPrevious;
-        public bool CanPlayPrevious {
-            get { return _CanPlayPrevious; }
-            set { _CanPlayPrevious = value; NotifyOfPropertyChange(() => CanPlayPrevious); }
-        }
+		private bool _CanPlayPause;
+		public bool CanPlayPause {
+			get { return _CanPlayPause; }
+			set { _CanPlayPause = value; NotifyOfPropertyChange(() => CanPlayPause); }
+		}
 
-        private bool _CanPlayNext;
-        public bool CanPlayNext {
-            get { return _CanPlayNext; }
-            set { _CanPlayNext = value; NotifyOfPropertyChange(() => CanPlayNext); }
-        }
+		private bool _CanPlayPrevious;
+		public bool CanPlayPrevious {
+			get { return _CanPlayPrevious; }
+			set { _CanPlayPrevious = value; NotifyOfPropertyChange(() => CanPlayPrevious); }
+		}
 
-        private bool _HasTrackInformation;
-        public bool HasTrackInformation {
-            get { return _HasTrackInformation; }
-            set { _HasTrackInformation = value; NotifyOfPropertyChange(() => HasTrackInformation); }
-        }
+		private bool _CanPlayNext;
+		public bool CanPlayNext {
+			get { return _CanPlayNext; }
+			set { _CanPlayNext = value; NotifyOfPropertyChange(() => CanPlayNext); }
+		}
 
-        #endregion
+		private bool _HasTrackInformation;
+		public bool HasTrackInformation {
+			get { return _HasTrackInformation; }
+			set { _HasTrackInformation = value; NotifyOfPropertyChange(() => HasTrackInformation); }
+		}
 
-        public void ShowSettings() {
-            _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<SettingsViewModel>());
-        }
+		private ApplicationSize _ApplicationSize;
+		public ApplicationSize ApplicationSize {
+			get { return _ApplicationSize; }		    
+			set { _ApplicationSize = value; NotifyOfPropertyChange(() => ApplicationSize); }
+		}
 
-        public void ShowAbout() {
-            _WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<AboutViewModel>());
-        }
+		#endregion
 
-        public void PlayPause() {
-            _SpotifyController.PausePlay();
-        }
+		public void ShowSettings() {
+			_WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<SettingsViewModel>());
+		}
 
-        public void PlayPrevious() {
-            _SpotifyController.PreviousTrack();
-        }
+		public void ShowAbout() {
+			_WindowManager.ShowDialog(TinyIoCContainer.Current.Resolve<AboutViewModel>());
+		}
 
-        public void PlayNext() {
-            _SpotifyController.NextTrack();
-        }
+		public void PlayPause() {
+			_SpotifyController.PausePlay();
+		}
 
-        public void VolumeUp() {
-            _SpotifyController.VolumeUp();
-        }
+		public void PlayPrevious() {
+			_SpotifyController.PreviousTrack();
+		}
 
-        public void VolumeDown() {
-            _SpotifyController.VolumeDown();
-        }
+		public void PlayNext() {
+			_SpotifyController.NextTrack();
+		}
 
-        private void SpotifyOpened() {
-            if(_Settings.HideIfSpotifyClosed)
-                OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
+		public void VolumeUp() {
+			_SpotifyController.VolumeUp();
+		}
 
-            UpdateView();
-        }
+		public void VolumeDown() {
+			_SpotifyController.VolumeDown();
+		}
 
-        private void SpotifyExited() {
-            if(_Settings.HideIfSpotifyClosed)
-                OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
+		private void SpotifyOpened() {
+			if(_Settings.HideIfSpotifyClosed)
+				OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Visible));
 
-            UpdateView();
-        }
+			UpdateView();
+		}
 
-        private void UpdateView() {
-            try {
-                var status = _SpotifyController.GetStatus();
-                var track = _SpotifyController.GetSongName();
-                var artist = _SpotifyController.GetArtistName();
-                var fade = (status != null && status.Playing);
+		private void SpotifyExited() {
+			if(_Settings.HideIfSpotifyClosed)
+				OnToggleVisibility(new ToggleVisibilityEventArgs(Visibility.Hidden));
 
-                if(fade)
-                    OnCoverDisplayFadeOut();
+			UpdateView();
+		}
 
-                HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
-                CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
-                CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
+		private void UpdateView() {
+			try {
+				var status = _SpotifyController.GetStatus();
+				var track = _SpotifyController.GetSongName();
+				var artist = _SpotifyController.GetArtistName();
+				var fade = (status != null && status.Playing);
 
-                CanPlayPause = _SpotifyController.IsSpotifyOpen();
-                CanPlayPrevious = _SpotifyController.IsSpotifyOpen();
-                CanPlayNext = _SpotifyController.IsSpotifyOpen();
+				if(fade)
+					OnCoverDisplayFadeOut();
 
-                if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
-                    if(_Settings.DisableAnimations)
-                        CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
+				HasTrackInformation = (!string.IsNullOrEmpty(track) || !string.IsNullOrEmpty(artist));
+				CurrentTrack = string.IsNullOrEmpty(track) ? "-" : track;
+				CurrentArtist = string.IsNullOrEmpty(artist) ? "-" : artist;
 
-                    var updateCoverAction = new Action(() => {
-                                                           var coverUri = _CoverService.FetchCover(artist, track);
-                                                           if (string.IsNullOrEmpty(coverUri))
-                                                               coverUri = UnknownCoverUri;
-                                                           CoverImage = coverUri;
-                                                           if (fade)
-                                                               OnCoverDisplayFadeIn();
-                                                       });
-                    updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
-                }
-                else {
-                    CoverImage = NoCoverUri;
-                    if(fade)
-                        OnCoverDisplayFadeIn();
-                }
-            }
-            catch (Exception exc) {
-                _Logger.FatalException("UpdateView() failed hard", exc);
-            }
-        }
+				CanPlayPause = _SpotifyController.IsSpotifyOpen();
+				CanPlayPrevious = _SpotifyController.IsSpotifyOpen();
+				CanPlayNext = _SpotifyController.IsSpotifyOpen();
 
-        private void UpdateCoverActionCallback(IAsyncResult result) {
-            var asyncResult = result as AsyncResult;
-            if (asyncResult != null) {
-                var d = asyncResult.AsyncDelegate as Action;
-                if (d != null)
-                    d.EndInvoke(result);
-            }
-        }
+				if (_SpotifyController.IsSpotifyOpen() && !string.IsNullOrEmpty(track) && !string.IsNullOrEmpty(artist)) {
+					if(_Settings.DisableAnimations)
+						CoverImage = NoCoverUri; //Reset cover image, no cover is better than an old one
 
-        void UpdateReady(object sender, UpdateReadyEventArgs e) {
-            if(e.IsRequired) //important update, do the restart asap
-                _UpdateService.Restart();
+					var updateCoverAction = new Action(() => {
+														   var coverUri = _CoverService.FetchCover(artist, track);
+														   if (string.IsNullOrEmpty(coverUri))
+															   coverUri = UnknownCoverUri;
+														   CoverImage = coverUri;
+														   if (fade)
+															   OnCoverDisplayFadeIn();
+													   });
+					updateCoverAction.BeginInvoke(UpdateCoverActionCallback, null);
+				}
+				else {
+					CoverImage = NoCoverUri;
+					if(fade)
+						OnCoverDisplayFadeIn();
+				}
+			}
+			catch (Exception exc) {
+				_Logger.FatalException("UpdateView() failed hard", exc);
+			}
+		}
 
-            Execute.OnUIThread(() => _WindowManager.ShowDialog(
-                TinyIoCContainer.Current.Resolve<UpdateReadyViewModel>(
-                    new NamedParameterOverloads(new Dictionary<string, object> {
-                                                                                   {"newVersion", e.NewVersion},
-                                                                                   {"changelog",e.Changelog}
-                                                                               }))));
+		private void UpdateCoverActionCallback(IAsyncResult result) {
+			var asyncResult = result as AsyncResult;
+			if (asyncResult != null) {
+				var d = asyncResult.AsyncDelegate as Action;
+				if (d != null)
+					d.EndInvoke(result);
+			}
+		}
 
-        }
+		void UpdateReady(object sender, UpdateReadyEventArgs e) {
+			if(e.IsRequired) //important update, do the restart asap
+				_UpdateService.Restart();
 
-        private void BroadcastMessageReceived(object sender, BroadcastMessageReceivedEventArgs e) {
-            Execute.OnUIThread(() => _WindowManager.ShowDialog(
-                TinyIoCContainer.Current.Resolve<NewBroadcastMessageViewModel>(
-                new NamedParameterOverloads(new Dictionary<string, object> {{"message", e.Message}}))));
-        }
+			Execute.OnUIThread(() => _WindowManager.ShowDialog(
+				TinyIoCContainer.Current.Resolve<UpdateReadyViewModel>(
+					new NamedParameterOverloads(new Dictionary<string, object> {
+																				   {"newVersion", e.NewVersion},
+																				   {"changelog",e.Changelog}
+																			   }))));
 
-        private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
-            Execute.OnUIThread(() => {
-                                   var handler = ToggleVisibility;
-                                   if (handler != null) handler(this, e);
-                               });
-        }
-        private void OnCoverDisplayFadeOut() {
-            Execute.OnUIThread(() => {
-                                   if (_Settings.DisableAnimations)
-                                       return;
+		}
 
-                                   var handler = CoverDisplayFadeOut;
-                                   if (handler != null) handler(this, EventArgs.Empty);
-                               });
-        }
+		private void BroadcastMessageReceived(object sender, BroadcastMessageReceivedEventArgs e) {
+			Execute.OnUIThread(() => _WindowManager.ShowDialog(
+				TinyIoCContainer.Current.Resolve<NewBroadcastMessageViewModel>(
+				new NamedParameterOverloads(new Dictionary<string, object> {{"message", e.Message}}))));
+		}
 
-        private void OnCoverDisplayFadeIn() {
-            Execute.OnUIThread(() => {
-                                   if (_Settings.DisableAnimations)
-                                       return;
+		private void OnToggleVisibility(ToggleVisibilityEventArgs e) {
+			Execute.OnUIThread(() => {
+								   var handler = ToggleVisibility;
+								   if (handler != null) handler(this, e);
+							   });
+		}
+		private void OnCoverDisplayFadeOut() {
+			Execute.OnUIThread(() => {
+								   if (_Settings.DisableAnimations)
+									   return;
 
-                                   var handler = CoverDisplayFadeIn;
-                                   if (handler != null) handler(this, EventArgs.Empty);
-                               });
-        }
-    }
+								   var handler = CoverDisplayFadeOut;
+								   if (handler != null) handler(this, EventArgs.Empty);
+							   });
+		}
+
+		private void OnCoverDisplayFadeIn() {
+			Execute.OnUIThread(() => {
+								   if (_Settings.DisableAnimations)
+									   return;
+
+								   var handler = CoverDisplayFadeIn;
+								   if (handler != null) handler(this, EventArgs.Empty);
+							   });
+		}
+	}
 }

@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
+    <Compile Include="Converter\ApplicationSizeConverter.cs" />
     <Compile Include="Converter\VisibilityConverter.cs" />
     <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="IFixedPosition.cs" />
