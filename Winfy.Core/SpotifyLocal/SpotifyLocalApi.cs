@@ -75,6 +75,7 @@ namespace Winfy.Core.SpotifyLocal {
             //emulate the embed code [NEEDED]
             _Client = new WebClient();
             _Client.Headers.Add("Origin", "https://embed.spotify.com");
+            _Client.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
             _Client.Headers.Add("Referer", "https://embed.spotify.com/?uri=spotify:track:5Zp4SWOpbuOdnsxLqwgutt");
             _Client.Encoding = Encoding.UTF8;
             if (_Client.Proxy != null)
