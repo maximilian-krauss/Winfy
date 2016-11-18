@@ -90,7 +90,7 @@ namespace Winfy.Core {
 
         private void AttachToProcess() {
             _SpotifyProcess = null;
-            _SpotifyProcess = Process.GetProcessesByName("spotify").FirstOrDefault();
+            _SpotifyProcess = Process.GetProcessesByName("spotify").Where(x => x.MainWindowHandle.ToInt32() != 0).FirstOrDefault();
             if (_SpotifyProcess != null) {
                 //Renew token for Spotify local api
                 _LocalApi.RenewToken();
@@ -224,16 +224,14 @@ namespace Winfy.Core {
             if (_CurrentTrackInfo != null && _CurrentTrackInfo.Track != null && _CurrentTrackInfo.Track.TrackResource != null)
                 return _CurrentTrackInfo.Track.TrackResource.Name;
 
-            var title = GetSpotifyWindowTitle().Split('–');
-            return title.Count() > 1 ? title[1].Trim() : string.Empty;
+            string[] title = GetSpotifyWindowTitle().Split(new char[] { '-' }, 2); return title.Count() > 1 ? title[1].Trim() : string.Empty;
         }
 
         public string GetArtistName() {
             if (_CurrentTrackInfo != null && _CurrentTrackInfo.Track != null && _CurrentTrackInfo.Track.ArtistResource != null)
                 return _CurrentTrackInfo.Track.ArtistResource.Name;
 
-            var title = GetSpotifyWindowTitle().Split('–');
-            return title.Count() > 1 ? title[0].Split('-')[1].Trim() : string.Empty;
+            string[] title = GetSpotifyWindowTitle().Split(new char[] { '-' }, 2); return title.Count() > 1 ? title[0].Trim() : string.Empty;
         }
 
         public Status GetStatus() {
